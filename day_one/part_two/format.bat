@@ -1,0 +1,1 @@
+clang-format.exe -i main.c --style=Chromium

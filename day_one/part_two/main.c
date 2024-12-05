@@ -74,17 +74,31 @@ int main(void) {
     i++;
   }
 
-  qsort(first_col, num_lines, sizeof(int), compare);
+  // sort the aray so we can early out. See "Fast early out"
   qsort(second_col, num_lines, sizeof(int), compare);
 
-  int total_distance = 0;
-
   for (i = 0; i < num_lines; i++) {
-    total_distance += abs(first_col[i] - second_col[i]);
+    int left_current = first_col[i];
+    int count = 0;
+    for (size_t j = 0; j < num_lines; j++) {
+      int right_current = second_col[j];
+
+      // Fast early out
+      if (right_current > left_current) {
+        break;
+      } else if (second_col[j] == left_current) {
+        ++count;
+      }
+    }
+    first_col[i] *= count;
   }
 
-  printf("total_distance=%u\n", total_distance);
+  int total = 0;
+  for (i = 0; i < num_lines; i++) {
+    total += first_col[i];
+  }
 
+  printf("total=%u", total);
 
   free(first_col);
   free(second_col);
