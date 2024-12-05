@@ -1,1 +1,0 @@
-clang-cl.exe /MD /O2 -DNDEBUG main.c -o main.exe

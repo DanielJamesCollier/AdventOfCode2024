@@ -1,8 +1,0 @@
-# Ignore Visual Studio files
-.vs
-
-# Ignore IntelliSense files
-.ilk
-
-# Ignore Program Database files
-.pdb
