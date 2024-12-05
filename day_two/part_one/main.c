@@ -83,8 +83,6 @@ int main(void) {
     return 0;
   }
 
-  free(first_col);
-  free(second_col);
   free(file);
 
   return 0;
