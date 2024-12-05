@@ -43,8 +43,7 @@ static char* get_input_file(void) {
   // Find the last occurrence of the backslash ('\') in the path
   char* lastBackslash = strrchr(filePath, '\\');
   if (lastBackslash != NULL) {
-    // Replace the executable name with "..\\input.txt"
-    const char* inputFile = "..\\input.txt";
+    const char* inputFile = "resources\\day_one\\input.txt";
     size_t inputFileLength = strlen(inputFile) + 1;  // +1 for null-terminator
 
     // Ensure that we have enough space to copy the new path
@@ -76,9 +75,11 @@ static int compare(const void* a, const void* b) {
 
 int main(void) {
   size_t file_size = 0;
-  char* file = load_entire_file(get_input_file(), &file_size);
+  char* input_file_path = get_input_file();
+  char* file = load_entire_file(input_file_path, &file_size);
+
   if (file == NULL) {
-    printf("Failed to load the file input.txt");
+    printf("Failed to load the file input.txt: %s", input_file_path);
     return 0;
   }
 

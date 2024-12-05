@@ -1,2 +1,2 @@
-clang-cl /MDd /Zi /Od /Wall  -Wno-unsafe-buffer-usage -Wno-declaration-after-statement /std:c17 day_one/part_one/main.c -o day_one/part_one/out.exe
-clang-cl /MDd /Zi /Od /Wall  -Wno-unsafe-buffer-usage -Wno-declaration-after-statement /std:c17 day_one/part_two/main.c -o day_one/part_two/out.exe
+clang-cl /MDd /Zi /Od /Wall  -Wno-unsafe-buffer-usage -Wno-declaration-after-statement /std:c17 day_one/part_one/main.c -o out/day_1_part_1.exe
+clang-cl /MDd /Zi /Od /Wall  -Wno-unsafe-buffer-usage -Wno-declaration-after-statement /std:c17 day_one/part_two/main.c -o out/day_1_part_2.exe
