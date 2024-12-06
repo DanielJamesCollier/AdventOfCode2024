@@ -35,6 +35,8 @@ internal void push_level(struct report* report, int level) {
 }
 
 internal bool is_safe(int* levels, size_t num_levels) {
+  assert(levels);
+
   bool increasing = true;
   bool decreasing = true;
   for (size_t i = 0; i < num_levels - 1; i++) {

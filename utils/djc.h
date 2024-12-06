@@ -20,6 +20,8 @@ typedef double f64;
 #define persist static
 
 inline char* djc_load_entire_file(char* filename, size_t* plen) {
+  assert(filename);
+
   char* text = NULL;
   size_t len = 0;
   FILE* f = fopen(filename, "rb");
@@ -47,6 +49,8 @@ inline char* djc_load_entire_file(char* filename, size_t* plen) {
 }
 
 inline size_t djc_count_lines_in_file(const char* lines) {
+  assert(lines);
+
   size_t num_lines = 0;
   while (*lines++) {
     if (*lines == '\n' || *lines == '\0') {
@@ -76,6 +80,8 @@ inline int djc_count_digits(int n) {
 }
 
 inline char* djc_get_input_file(const char* exe_relative_path) {
+  assert(exe_relative_path);
+
   persist char filePath[MAX_PATH];  // MAX_PATH is more appropriate than 260
 
   // Get the full path of the executable
