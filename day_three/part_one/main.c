@@ -43,6 +43,9 @@ int main(void) {
           if (*end != ',')
             continue;
           end++;
+          if (*current == '\0') {
+              break;
+          }
           current = end;
           long int num_two = strtol(current, &end, 10);
           if (*end == ')') {
