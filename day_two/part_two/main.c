@@ -35,68 +35,33 @@ internal void push_level(struct report* report, int level) {
 }
 
 internal bool increasing(int* levels, size_t num_levels) {
-  size_t inc_errors = 0;
   for (size_t j = 0; j < num_levels - 1; j++) {
-    if (levels[j] > levels[j + 1]) {
-      inc_errors++;
-      if (inc_errors > 1) {
-        return false;
-      }
+    if (levels[j] >= levels[j + 1]) {
+      return false;
     }
   }
   return true;
 }
 
 internal bool decreasing(int* levels, size_t num_levels) {
-  size_t dec_errors = 0;
   for (size_t j = 0; j < num_levels - 1; j++) {
-    if (levels[j] < levels[j + 1]) {
-      dec_errors++;
-      if (dec_errors > 1) {
-        return false;
-      }
+    if (levels[j] <= levels[j + 1]) {
+       return false;
     }
   }
   return true;
 }
 
 internal bool difference(int* levels, size_t num_levels) {
-  size_t diff_errors = 0;
-  bool difference_ok = true;
+  bool ok = true;
   for (size_t j = 0; j < num_levels - 1; j++) {
     int diff = abs(levels[j] - levels[j + 1]);
-    if (diff == 0) {
-      diff_errors++;
-      if (j < num_levels - 2) {
-        int diff_2 = abs(levels[j] - levels[j + 2]);
-        if (diff_2 >= 1) {
-          difference_ok = false;
-          break;
-        } else if (diff <= 3) {
-          difference_ok = false;
-          break;
-        }
-      }
-    } else if (diff > 3) {
-      diff_errors++;
-      if (j < num_levels - 2) {
-        int diff_2 = abs(levels[j] - levels[j + 2]);
-        if (diff_2 >= 1) {
-          difference_ok = false;
-          break;
-        } else if (diff <= 3) {
-          difference_ok = false;
-          break;
-        }
-      }
-    }
-
-    if (diff_errors > 1) {
-      difference_ok = false;
+    if (diff < 1 || diff > 3) {
+      ok = false;
       break;
     }
   }
-  return difference_ok;
+  return ok;
 }
 
 int main(void) {
@@ -140,13 +105,10 @@ int main(void) {
   size_t num_safe_reports = 0;
 
   for (i = 0; i < reports_list.num_reports; i++) {
-    bool all_increasing =
-        increasing(reports_list.rep[i].level, reports_list.rep[i].num_levels);
-    bool all_decreasing =
-        decreasing(reports_list.rep[i].level, reports_list.rep[i].num_levels);
-    bool difference_ok =
-        difference(reports_list.rep[i].level, reports_list.rep[i].num_levels);
-    bool safe = (all_decreasing || all_increasing) && difference_ok;
+    bool b_increasing = increasing(reports_list.rep[i].level, reports_list.rep[i].num_levels);
+    bool b_decreasing = decreasing(reports_list.rep[i].level, reports_list.rep[i].num_levels);
+    bool b_diff = difference(reports_list.rep[i].level, reports_list.rep[i].num_levels);
+    bool safe = (b_increasing || b_decreasing) && b_diff;
     printf("safe %u\n", (int)safe);
 
     if (safe) {

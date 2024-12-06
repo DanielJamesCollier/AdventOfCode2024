@@ -1,10 +1,9 @@
 #define _CRT_SECURE_NO_WARNINGS
 
-#include <Windows.h>  // For GetModuleFileName.
+#include <Windows.h>
 #include <assert.h>
 #include <stdbool.h>
-#include <stdio.h>
-#include <stdlib.h>
+#include <stdint.h>
 #include <string.h>
 
 #include "../../utils/djc.h"
@@ -19,7 +18,7 @@ struct reports {
   size_t num_reports;
 };
 
-static void push_level(struct report* report, int level) {
+internal void push_level(struct report* report, int level) {
   assert(report);
 
   size_t new_num_levels = report->num_levels + 1;
@@ -33,6 +32,36 @@ static void push_level(struct report* report, int level) {
   report->level = new_level;
   report->level[report->num_levels] = level;
   report->num_levels = new_num_levels;
+}
+
+internal bool increasing(int* levels, size_t num_levels) {
+  for (size_t j = 0; j < num_levels - 1; j++) {
+    if (levels[j] >= levels[j + 1]) {
+      return false;
+    }
+  }
+  return true;
+}
+
+internal bool decreasing(int* levels, size_t num_levels) {
+  for (size_t j = 0; j < num_levels - 1; j++) {
+    if (levels[j] <= levels[j + 1]) {
+      return false;
+    }
+  }
+  return true;
+}
+
+internal bool difference(int* levels, size_t num_levels) {
+  bool ok = true;
+  for (size_t j = 0; j < num_levels - 1; j++) {
+    int diff = abs(levels[j] - levels[j + 1]);
+    if (diff < 1 || diff > 3) {
+      ok = false;
+      break;
+    }
+  }
+  return ok;
 }
 
 int main(void) {
@@ -76,41 +105,13 @@ int main(void) {
   size_t num_safe_reports = 0;
 
   for (i = 0; i < reports_list.num_reports; i++) {
-    size_t j_bounds = reports_list.rep[i].num_levels;
-
-    bool all_increasing = true;
-    for (size_t j = 0; j < j_bounds - 1; j++) {
-      if (reports_list.rep[i].level[j] > reports_list.rep[i].level[j + 1]) {
-        all_increasing = false;
-        break;
-      }
-    }
-
-    bool all_decreasing = true;
-    for (size_t j = 0; j < j_bounds - 1; j++) {
-      if (reports_list.rep[i].level[j] < reports_list.rep[i].level[j + 1]) {
-        all_decreasing = false;
-        break;
-      }
-    }
-
-    // Any two adjacent levels should differ by at least one and at most three.
-    bool difference_ok = true;
-    for (size_t j = 0; j < j_bounds - 1; j++) {
-      int diff =
-          abs(reports_list.rep[i].level[j] - reports_list.rep[i].level[j + 1]);
-      if (diff == 0) {
-        difference_ok = false;
-        break;
-      }
-
-      if (diff > 3) {
-        difference_ok = false;
-        break;
-      }
-    }
-
-    bool safe = (all_decreasing || all_increasing) && difference_ok;
+    bool safe =
+        (increasing(reports_list.rep[i].level,
+                    reports_list.rep[i].num_levels) ||
+         decreasing(reports_list.rep[i].level,
+                    reports_list.rep[i].num_levels)) &&
+        difference(reports_list.rep[i].level, reports_list.rep[i].num_levels);
+    printf("safe %u\n", (int)safe);
 
     if (safe) {
       ++num_safe_reports;
