@@ -37,18 +37,16 @@ int main(void) {
         current++;
         if (*current == '(') {
           current++;
-          if (*current == '\0') {
-              break;
-          }
 
           char* end = NULL;
           long int num_one = strtol(current, &end, 10);
           if (*end != ',')
             continue;
-
           end++;
+          if (*current == '\0') {
+              break;
+          }
           current = end;
-
           long int num_two = strtol(current, &end, 10);
           if (*end == ')') {
             accumulator += num_one * num_two;
