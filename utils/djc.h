@@ -102,4 +102,28 @@ inline char* djc_get_input_file(const char* exe_relative_path) {
   return filePath;  // Return the modified file path
 }
 
+//internal int* remove_at(int* input_array, size_t input_array_length, size_t index_to_remove, size_t* new_array_length) { 
+//  size_t new_length = input_array_length - 1;
+//
+//  int* new_array = (int*)malloc(new_length * sizeof(int));
+//  if (new_array == NULL) {
+//    printf("malloc failed");
+//    exit(EXIT_FAILURE);
+//  }
+//
+//  if (index_to_remove > input_array_length) {
+//    printf("index out of bounds in remove_at(). index=%zu", index_to_remove);
+//    exit(EXIT_FAILURE);
+//  }
+// 
+//  for (size_t i = 0, j = 0; i < input_array_length; i++) {
+//      if (index_to_remove != i) {
+//          new_array[j++] = input_array[i];
+//      }
+//  }
+//
+//  *new_array_length = new_length;
+//  return new_array;
+//}
+
 #endif  // DJC_H_

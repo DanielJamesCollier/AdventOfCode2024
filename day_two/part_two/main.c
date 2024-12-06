@@ -34,35 +34,32 @@ internal void push_level(struct report* report, int level) {
   report->num_levels = new_num_levels;
 }
 
-internal bool increasing(int* levels, size_t num_levels) {
-  for (size_t j = 0; j < num_levels - 1; j++) {
-    if (levels[j] >= levels[j + 1]) {
+internal bool is_safe(int* levels, size_t num_levels) {
+  bool increasing = true;
+  bool decreasing = true;
+  for (size_t i = 0; i < num_levels - 1; i++) {
+
+    int diff = abs(levels[i] - levels[i + 1]);
+    if (diff < 1 || diff > 3) {
+      return false;
+    }
+     
+    if (levels[i] >= levels[i + 1]) {
+      increasing = false;
+    }
+
+    if (levels[i] <= levels[i + 1]) {
+      decreasing = false;
+    }
+
+    // small optimisation to skip some unneeded loops.
+    if (!increasing && !decreasing) {
       return false;
     }
   }
-  return true;
+  return increasing || decreasing; 
 }
 
-internal bool decreasing(int* levels, size_t num_levels) {
-  for (size_t j = 0; j < num_levels - 1; j++) {
-    if (levels[j] <= levels[j + 1]) {
-       return false;
-    }
-  }
-  return true;
-}
-
-internal bool difference(int* levels, size_t num_levels) {
-  bool ok = true;
-  for (size_t j = 0; j < num_levels - 1; j++) {
-    int diff = abs(levels[j] - levels[j + 1]);
-    if (diff < 1 || diff > 3) {
-      ok = false;
-      break;
-    }
-  }
-  return ok;
-}
 
 int main(void) {
   size_t file_size = 0;
@@ -105,15 +102,13 @@ int main(void) {
   size_t num_safe_reports = 0;
 
   for (i = 0; i < reports_list.num_reports; i++) {
-    bool b_increasing = increasing(reports_list.rep[i].level, reports_list.rep[i].num_levels);
-    bool b_decreasing = decreasing(reports_list.rep[i].level, reports_list.rep[i].num_levels);
-    bool b_diff = difference(reports_list.rep[i].level, reports_list.rep[i].num_levels);
-    bool safe = (b_increasing || b_decreasing) && b_diff;
-    printf("safe %u\n", (int)safe);
+    bool safe = is_safe(reports_list.rep[i].level, reports_list.rep[i].num_levels);
 
     if (safe) {
-      ++num_safe_reports;
+      num_safe_reports++;
     }
+
+    printf("safe %u\n", (int)safe);
   }
 
   printf("num_safe_reports=%zu", num_safe_reports);
