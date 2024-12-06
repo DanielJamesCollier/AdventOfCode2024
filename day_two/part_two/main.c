@@ -56,10 +56,52 @@ internal bool is_safe(int* levels, size_t num_levels) {
     if (!increasing && !decreasing) {
       return false;
     }
+
   }
   return increasing || decreasing; 
 }
 
+internal int* remove_at(int* input_array, size_t input_array_length, size_t index_to_remove, size_t* new_array_length) { 
+  size_t new_length = input_array_length - 1;
+
+  int* new_array = (int*)malloc(new_length * sizeof(int));
+  if (new_array == NULL) {
+    printf("malloc failed");
+    exit(EXIT_FAILURE);
+  }
+
+  if (index_to_remove > input_array_length) {
+    printf("index out of bounds in remove_at(). index=%zu", index_to_remove);
+    exit(EXIT_FAILURE);
+  }
+ 
+  for (size_t i = 0, j = 0; i < input_array_length; i++) {
+      if (index_to_remove != i) {
+          new_array[j++] = input_array[i];
+      }
+  }
+
+  *new_array_length = new_length;
+  return new_array;
+}
+
+internal bool check(int* levels, size_t num_levels) {
+
+  if (is_safe(levels, num_levels)) {
+    return true;
+  }
+
+  for (size_t i = 0; i < num_levels; i++) {
+     size_t new_array_length = 0;
+     int* new_array = remove_at(levels, num_levels, i, &new_array_length); 
+     bool now_safe = is_safe(new_array, new_array_length);
+     free(new_array);
+     if (now_safe) {
+       return true;
+     }
+  }
+  return false;
+}
 
 int main(void) {
   size_t file_size = 0;
@@ -102,7 +144,7 @@ int main(void) {
   size_t num_safe_reports = 0;
 
   for (i = 0; i < reports_list.num_reports; i++) {
-    bool safe = is_safe(reports_list.rep[i].level, reports_list.rep[i].num_levels);
+    bool safe = check(reports_list.rep[i].level, reports_list.rep[i].num_levels);
 
     if (safe) {
       num_safe_reports++;
