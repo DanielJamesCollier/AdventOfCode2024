@@ -7,88 +7,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-static char* load_entire_file(char* filename, size_t* plen) {
-  char* text = NULL;
-  size_t len = 0;
-  FILE* f = fopen(filename, "rb");
-
-  if (f == 0)
-    return NULL;
-
-  fseek(f, 0, SEEK_END);
-  len = (size_t)ftell(f);
-
-  if (plen)
-    *plen = len;
-
-  text = (char*)malloc(len + 1);
-
-  if (text == NULL)
-    return NULL;
-
-  fseek(f, 0, SEEK_SET);
-  fread(text, 1, len, f);
-  fclose(f);
-  text[len] = '\0';
-
-  return text;
-}
-
-static char* get_input_file(void) {
-  static char filePath[MAX_PATH];  // MAX_PATH is more appropriate than 260
-
-  // Get the full path of the executable
-  if (GetModuleFileName(NULL, filePath, sizeof(filePath)) == 0) {
-    return NULL;  // Return NULL if there's an error
-  }
-
-  // Find the last occurrence of the backslash ('\') in the path
-  char* lastBackslash = strrchr(filePath, '\\');
-  if (lastBackslash != NULL) {
-    const char* inputFile = "\\resources\\day_two\\input.txt";
-    size_t inputFileLength = strlen(inputFile) + 1;  // +1 for null-terminator
-
-    // Ensure that we have enough space to copy the new path
-    size_t offset = (size_t)(lastBackslash - filePath);  // Cast to size_t
-    if (lastBackslash + 1 + inputFileLength <= filePath + sizeof(filePath)) {
-      snprintf(lastBackslash + 1, sizeof(filePath) - offset - 1, "%s",
-               inputFile);
-    } else {
-      return NULL;  // Buffer overflow protection
-    }
-  }
-
-  return filePath;  // Return the modified file path
-}
-
-static size_t count_lines_in_file(const char* lines) {
-  size_t num_lines = 0;
-  while (*lines++) {
-    if (*lines == '\n' || *lines == '\0') {
-      ++num_lines;
-    }
-  }
-  return num_lines;
-}
-
-static int count_digits(int n) {
-  int count = 0;
-
-  if (n == 0) {
-    return 1;
-  }
-
-  if (n < 0) {
-    n = -n;
-  }
-
-  while (n > 0) {
-    n /= 10;
-    count++;
-  }
-
-  return count;
-}
+#include "../../utils/djc.h"
 
 struct report {
   int* level;
@@ -118,11 +37,11 @@ static void push_level(struct report* report, int level) {
 
 int main(void) {
   size_t file_size = 0;
-  char* input_file_path = get_input_file();
-  char* file = load_entire_file(input_file_path, &file_size);
+  char* input_file_path = djc_get_input_file("\\resources\\day_two\\input.txt");
+  char* file = djc_load_entire_file(input_file_path, &file_size);
 
   struct reports reports_list;
-  reports_list.num_reports = count_lines_in_file(file);
+  reports_list.num_reports = djc_count_lines_in_file(file);
   reports_list.rep =
       (struct report*)calloc(reports_list.num_reports, sizeof(struct report));
 
@@ -137,7 +56,7 @@ int main(void) {
   while (*current != '\0') {
     int current_level = atoi(current);
     push_level(&reports_list.rep[i], current_level);
-    int digits = count_digits(current_level);
+    int digits = djc_count_digits(current_level);
     current += digits;
 
     if (*current == ' ') {
@@ -159,18 +78,18 @@ int main(void) {
   for (i = 0; i < reports_list.num_reports; i++) {
     size_t j_bounds = reports_list.rep[i].num_levels;
 
-    bool all_decreasing = true;
+    bool all_increasing = true;
     for (size_t j = 0; j < j_bounds - 1; j++) {
       if (reports_list.rep[i].level[j] > reports_list.rep[i].level[j + 1]) {
-        all_decreasing = false;
+        all_increasing = false;
         break;
       }
     }
 
-    bool all_increasing = true;
+    bool all_decreasing = true;
     for (size_t j = 0; j < j_bounds - 1; j++) {
       if (reports_list.rep[i].level[j] < reports_list.rep[i].level[j + 1]) {
-        all_increasing = false;
+        all_decreasing = false;
         break;
       }
     }
