@@ -28,28 +28,24 @@ int main(void) {
   while (*current) {
     switch (*current) {
       case 'd': {
-        char* local = ++current;
-        if (*local && *local == 'o') {
-          local++;
-          if (*local && *local == '(') {
-            local++;
-            if (*local && *local == ')') {
-              local++;
+        ++current;
+        if (*current && *current == 'o') {
+          ++current;
+          if (*current && *current == '(') {
+            ++current;
+            if (*current && *current == ')') {
               enable_muls = true;
-              current = local;
             }
-          } else if (*local && *local == 'n') {
-            local++;
-            if (*local && *local == '\'') {
-              local++;
-              if (*local && *local == 't') {
-                local++;
-                if (*local && *local == '(') {
-                  local++;
-                  if (*local && *local == ')') {
-                    local++;
+          } else if (*current && *current == 'n') {
+            ++current;
+            if (*current && *current == '\'') {
+              ++current;
+              if (*current && *current == 't') {
+                ++current;
+                if (*current && *current == '(') {
+                  ++current;
+                  if (*current && *current == ')') {
                     enable_muls = false;
-                    current = local;
                   }
                 }
               }
@@ -60,29 +56,29 @@ int main(void) {
 
       case 'm': {
         if (enable_muls) {
-          char* local = ++current;
-          if (*local && *local == 'u') {
-            local++;
-            if (*local && *local == 'l') {
-              local++;
-              if (*local && *local == '(') {
-                local++;
-                if (*local != '\0') {
+          ++current;
+          if (*current && *current == 'u') {
+            ++current;
+            if (*current && *current == 'l') {
+              ++current;
+              if (*current && *current == '(') {
+                ++current;
+                if (*current != '\0') {
                   char* end = NULL;
-                  long int num_one = strtol(local, &end, 10);
+                  long int num_one = strtol(current, &end, 10);
+
+                  // e.g. mul(29* is not valid.
                   if (*end != ',')
                     continue;
 
-                  end++;
-                  local = end;
+                  current = end + 1;
+                  long int num_two = strtol(current, &end, 10);
 
-                  long int num_two = strtol(local, &end, 10);
+                  // e.g. mul(29,9\0 or mul(29,9adsjf are not valid.
                   if (*end == ')') {
-                      printf("mul(%ld,%ld)\n", num_one, num_two);
+                    printf("mul(%ld,%ld)\n", num_one, num_two);
                     accumulator += num_one * num_two;
                   }
-                  local = end;
-                  current = local;
                 }
               }
             }
@@ -91,7 +87,10 @@ int main(void) {
 
       } break;
     }
-    current++;
+
+    if (*current != '\0') {
+      current++;
+    }
   }
 
   printf("answer=%ld", accumulator);
