@@ -6,3 +6,5 @@ clang-cl /MDd /Zi /Od /Wall  -Wno-unsafe-buffer-usage -Wno-declaration-after-sta
 
 clang-cl /MDd /Zi /Od /Wall  -Wno-unsafe-buffer-usage -Wno-declaration-after-statement /std:c17 day_three/part_one/main.c -o out/day_3_part_1.exe
 clang-cl /MDd /Zi /Od /Wall  -Wno-unsafe-buffer-usage -Wno-declaration-after-statement /std:c17 day_three/part_two/main.c -o out/day_3_part_2.exe
+
+clang-cl /MDd /Zi /Od /Wall  -Wno-unsafe-buffer-usage -Wno-declaration-after-statement /std:c17 day_four/part_one/main.c -o out/day_4_part_1.exe

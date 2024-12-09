@@ -1,6 +1,8 @@
 #ifndef DJC_H_
 #define DJC_H_
 
+#include <Windows.h>
+
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
