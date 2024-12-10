@@ -1,7 +1,5 @@
-
 #define _CRT_SECURE_NO_WARNINGS
 
-#include <Windows.h>  // For GetModuleFileName.
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -85,6 +83,9 @@ int main(void) {
         }
 
       } break;
+
+      default: 
+        break;
     }
 
     if (*current != '\0') {
