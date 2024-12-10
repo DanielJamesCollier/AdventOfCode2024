@@ -1,6 +1,5 @@
 #define _CRT_SECURE_NO_WARNINGS
 
-#include <Windows.h>
 #include <assert.h>
 #include <stdbool.h>
 #include <stdint.h>
@@ -108,11 +107,9 @@ int main(void) {
     if (safe) {
       num_safe_reports++;
     }
-
-    printf("safe %u\n", (int)safe);
   }
 
-  printf("num_safe_reports=%zu", num_safe_reports);
+  printf("Answer (d2p1) = %zu\n", num_safe_reports);
 
   return 0;
 }

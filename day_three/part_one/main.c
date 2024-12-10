@@ -1,7 +1,5 @@
-
 #define _CRT_SECURE_NO_WARNINGS
 
-#include <Windows.h>  // For GetModuleFileName.
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -59,7 +57,7 @@ int main(void) {
     }
     ++current;
   }
-  printf("answer=%ld", accumulator);
+  printf("Answer (d3p1) = %ld\n", accumulator);
 
   return 0;
 }

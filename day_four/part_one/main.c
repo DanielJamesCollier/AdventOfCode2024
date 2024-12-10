@@ -6,13 +6,13 @@
 
 #include "../../utils/djc.h"
 
-// Directions for 8 possible movements
-static int dx[] = {0, 1, 1, 1, 0, -1, -1, -1};
-static int dy[] = {1, 1, 0, -1, -1, -1, 0, 1};
-static size_t found = 0;
+internal int num_movements = 4;
+internal int dx[] = {0, 1, 0, -1};
+internal int dy[] = {1, 0, -1, 0};
+internal size_t found = 0;
 
 // Function to check if a word exists starting from (x, y) in a given direction
-static int search_direction(char** grid,
+internal int search_direction(char** grid,
                             int rows,
                             int cols,
                             int x,
@@ -40,12 +40,12 @@ static int search_direction(char** grid,
 }
 
 // Function to search for a word in the grid
-static void find_word(char** grid, int rows, int cols, const char* word) {
+internal void find_word(char** grid, int rows, int cols, const char* word) {
   assert(grid);
 
   for (int x = 0; x < rows; x++) {
     for (int y = 0; y < cols; y++) {
-      for (int dir = 0; dir < 8; dir++) {  // Check in all 8 directions
+      for (int dir = 0; dir < num_movements; dir++) {
         if (search_direction(grid, rows, cols, x, y, word, dir)) {
           ++found;
         }
@@ -54,8 +54,9 @@ static void find_word(char** grid, int rows, int cols, const char* word) {
   }
 }
 
-static size_t line_length(const char* string) {
+internal size_t line_length(const char* string) {
   assert(string);
+
   size_t num = 0;
   while (*string && *string != '\n') {
     ++string;
@@ -101,7 +102,7 @@ int main(void) {
     }
   }
 
-  find_word(array, (int)rows, (int)cols, "XMAS");
-  printf("answer=%zu", found);
+  find_word(array, (int)rows, (int)cols, "MAS");
+  printf("Answer (d4p1) = %zu\n", found);
   return 0;
 }

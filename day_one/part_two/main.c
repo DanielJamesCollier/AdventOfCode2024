@@ -1,6 +1,5 @@
 #define _CRT_SECURE_NO_WARNINGS
 
-#include <Windows.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -66,7 +65,7 @@ int main(void) {
     total += first_col[i];
   }
 
-  printf("day one part two =%u", total);
+  printf("Answer (d1p2) = %u\n", total);
 
   free(first_col);
   free(second_col);

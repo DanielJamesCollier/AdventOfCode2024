@@ -149,11 +149,9 @@ int main(void) {
     if (safe) {
       num_safe_reports++;
     }
-
-    printf("safe %u\n", (int)safe);
   }
 
-  printf("num_safe_reports=%zu", num_safe_reports);
+  printf("Answer (d2p2) = %zu\n", num_safe_reports);
 
   return 0;
 }

@@ -76,7 +76,6 @@ int main(void) {
 
                   // e.g. mul(29,9\0 or mul(29,9adsjf are not valid.
                   if (*end == ')') {
-                    printf("mul(%ld,%ld)\n", num_one, num_two);
                     accumulator += num_one * num_two;
                   }
                 }
@@ -93,7 +92,7 @@ int main(void) {
     }
   }
 
-  printf("answer=%ld", accumulator);
+  printf("Answer (d3p2) = %ld\n", accumulator);
 
   return 0;
 }

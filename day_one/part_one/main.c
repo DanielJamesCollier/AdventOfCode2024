@@ -1,6 +1,5 @@
 #define _CRT_SECURE_NO_WARNINGS
 
-#include <Windows.h>  // For GetModuleFileName.
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -51,8 +50,7 @@ int main(void) {
     total_distance += abs(first_col[i] - second_col[i]);
   }
 
-  printf("day one part one = %u\n", total_distance);
-  fflush(stdout);  // Will now print everything in the stdout buffer
+  printf("Answer (d1p1) = %u\n", total_distance);
 
   free(first_col);
   free(second_col);
