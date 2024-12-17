@@ -10,7 +10,7 @@
 #include <stdbool.h>
 
 #include "../utils/djc.h"
-#include "../utils/djc_arena.h"
+#include "../djc_arena/djc_arena.h"
 
 #define RULES_SIZE 100
 
@@ -53,11 +53,13 @@ internal bool sequence_valid(Sequence seq, i32 rules[RULES_SIZE][RULES_SIZE]) {
 }
 
 int main(void) {
-  Arena* mem = arena_create("General");
+  struct Arena* mem = arena_create("General");
   
   size_t length = 0;
   char* input_file_path = djc_get_input_file("\\resources\\day_five\\input.txt");
   char* file = djc_load_entire_file(input_file_path, &length);
+  djc_convert_crlf_to_lf(file);
+
   if (file == NULL) {
     fprintf(stderr, "Failed to load file\n");
     return 1;
@@ -73,8 +75,7 @@ int main(void) {
   for (char *line = file; line; line = get_next_line(line)) {
     size_t line_length = djc_line_length(line);
 
-    // Mac and Windows e.g. \r\n vs \n.
-    if (line_length == 2 || line_length == 1) {
+    if (line_length == 1) {
       section = SECTION_SEQUENCES;
       continue;
     }
@@ -89,9 +90,7 @@ int main(void) {
       
       while (*line && *line != '\n') {
         int value = atoi(line);
-        //printf("before arena alloc\n");
         arena_alloc(mem, sizeof(int));
-        //printf("after arena alloc\n");
         seq.values[seq.count++] = value;
         int digits = djc_count_digits(value);
         line += digits;
