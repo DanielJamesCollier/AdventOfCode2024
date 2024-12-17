@@ -1,16 +1,14 @@
 #define _CRT_SECURE_NO_WARNINGS
 
-#include <stdio.h>
-#include <stdlib.h>
+#include <assert.h>
+#include <stdbool.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <assert.h>
 #include <string.h>
-#include <stdbool.h>
 
-#include "../utils/djc.h"
 #include "../djc_arena/djc_arena.h"
+#include "../utils/djc.h"
 
 #define RULES_SIZE 100
 
@@ -35,7 +33,7 @@ internal void push_rule(i32 rules[RULES_SIZE][RULES_SIZE], i32 from, i32 to) {
 
 internal bool sequence_valid(Sequence seq, i32 rules[RULES_SIZE][RULES_SIZE]) {
   assert(seq.values);
-  
+
   for (i32 i = 0; i < seq.count; i++) {
     for (i32 j = i + 1; j < seq.count; j++) {
       for (i32 k = 0; k < RULES_SIZE; k++) {
@@ -54,9 +52,10 @@ internal bool sequence_valid(Sequence seq, i32 rules[RULES_SIZE][RULES_SIZE]) {
 
 int main(void) {
   struct Arena* mem = arena_create("General");
-  
+
   size_t length = 0;
-  char* input_file_path = djc_get_input_file("\\resources\\day_five\\input.txt");
+  char* input_file_path =
+      djc_get_input_file("\\resources\\day_five\\input.txt");
   char* file = djc_load_entire_file(input_file_path, &length);
   djc_convert_crlf_to_lf(file);
 
@@ -65,36 +64,39 @@ int main(void) {
     return 1;
   }
   printf("File loaded successfully.\n");
-  
+
   i32 rules[RULES_SIZE][RULES_SIZE];
   memset(rules, -1, sizeof(rules));
-  
+
   i32 section = SECTION_RULES;
   size_t accum = 0;
-  
-  for (char *line = file; line; line = get_next_line(line)) {
+
+  for (char* line = file; line; line = get_next_line(line)) {
     size_t line_length = djc_line_length(line);
 
     if (line_length == 1) {
       section = SECTION_SEQUENCES;
       continue;
     }
-    
+
     if (section == SECTION_RULES) {
       int from, to;
       if (sscanf(line, "%d|%d", &from, &to) == 2) {
         push_rule(rules, from, to);
       }
     } else if (section == SECTION_SEQUENCES) {
-      Sequence seq = { .values=mem->current, .count = 0, };
-      
+      Sequence seq = {
+          .values = mem->current,
+          .count = 0,
+      };
+
       while (*line && *line != '\n') {
         int value = atoi(line);
         arena_alloc(mem, sizeof(int));
         seq.values[seq.count++] = value;
         int digits = djc_count_digits(value);
         line += digits;
-        
+
         if (*line && *line == ',')
           line++;
       }
@@ -103,7 +105,7 @@ int main(void) {
       }
     }
   }
-  
+
   printf("answer: %zu\n", accum);
   arena_free(mem);
   free(file);
