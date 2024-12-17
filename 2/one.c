@@ -20,6 +20,7 @@ struct reports {
 
 internal bool is_safe(struct report* report) {
   assert(report);
+  assert(report->level);
 
   bool increasing = true;
   bool decreasing = true;
