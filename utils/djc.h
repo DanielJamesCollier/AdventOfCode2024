@@ -82,6 +82,38 @@ inline int djc_count_digits(int n) {
   return count;
 }
 
+inline char* get_next_line(char* string) {
+  if (string == NULL) {
+    return NULL;
+  }
+  
+  while (*string && *string != '\n')
+    ++string;
+  
+  if (*string == '\n')
+    ++string;
+  
+  return *string ? string : NULL;
+}
+
+inline size_t djc_line_length(char* string) {
+  if (string == NULL) {
+    return 0;
+  }
+  
+  size_t length = 0;
+  
+  while (*string && *string != '\n') {
+    ++length;
+    ++string;
+  }
+  
+  if (*string == '\n')
+    ++length;
+  
+  return length;
+}
+
 inline char* djc_get_input_file(const char* exe_relative_path) {
   assert(exe_relative_path);
 
