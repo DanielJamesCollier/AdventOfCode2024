@@ -21,8 +21,10 @@ typedef double f64;
 
 #define internal static
 #define persist static
+#define dedupe inline
+#define fold __forceinline
 
-inline char* djc_load_entire_file(char* filename, size_t* plen) {
+dedupe char* djc_load_entire_file(char* filename, size_t* plen) {
   assert(filename);
 
   char* text = NULL;
@@ -51,7 +53,7 @@ inline char* djc_load_entire_file(char* filename, size_t* plen) {
   return text;
 }
 
-inline size_t djc_count_lines_in_file(const char* lines) {
+dedupe size_t djc_count_lines_in_file(const char* lines) {
   assert(lines);
 
   size_t num_lines = 0;
@@ -63,7 +65,7 @@ inline size_t djc_count_lines_in_file(const char* lines) {
   return num_lines;
 }
 
-inline int djc_count_digits(int n) {
+dedupe int djc_count_digits(int n) {
   int count = 0;
 
   if (n == 0) {
@@ -82,7 +84,7 @@ inline int djc_count_digits(int n) {
   return count;
 }
 
-inline char* get_next_line(char* string) {
+dedupe char* get_next_line(char* string) {
   if (string == NULL) {
     return NULL;
   }
@@ -96,7 +98,7 @@ inline char* get_next_line(char* string) {
   return *string ? string : NULL;
 }
 
-inline size_t djc_line_length(char* string) {
+dedupe size_t djc_line_length(char* string) {
   if (string == NULL) {
     return 0;
   }
@@ -114,7 +116,7 @@ inline size_t djc_line_length(char* string) {
   return length;
 }
 
-inline char* djc_get_input_file(const char* exe_relative_path) {
+dedupe char* djc_get_input_file(const char* exe_relative_path) {
   assert(exe_relative_path);
 
   persist char filePath[MAX_PATH];  // MAX_PATH is more appropriate than 260
@@ -141,6 +143,31 @@ inline char* djc_get_input_file(const char* exe_relative_path) {
   }
 
   return filePath;  // Return the modified file path
+}
+
+dedupe void djc_convert_crlf_to_lf(char* str) {
+    if (str == NULL) {
+        return;
+    }
+
+    char* read = str;  // Pointer to read the string
+    char* write = str; // Pointer to write the converted string
+
+    while (*read) {
+        if (*read == '\r' && *(read + 1) == '\n') {
+            // Skip '\r' and move to the next character
+            read++;
+            continue;
+        } else {
+            // Copy the current character to the write pointer
+            *write = *read;
+            write++;
+        }
+        read++;
+    }
+
+    // Null-terminate the modified string
+    *write = '\0';
 }
 
 #endif  // DJC_H_
