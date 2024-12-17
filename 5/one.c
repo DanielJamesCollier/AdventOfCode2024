@@ -13,8 +13,8 @@
 #define RULES_SIZE 100
 
 typedef struct {
-  i32* values;
-  i32 count;
+  s32* values;
+  s32 count;
 } Sequence;
 
 typedef enum {
@@ -22,7 +22,7 @@ typedef enum {
   SECTION_SEQUENCES = 2,
 } Section;
 
-internal void push_rule(i32 rules[RULES_SIZE][RULES_SIZE], i32 from, i32 to) {
+internal void push_rule(s32 rules[RULES_SIZE][RULES_SIZE], s32 from, s32 to) {
   for (size_t i = 0; i < RULES_SIZE; i++) {
     if (rules[from][i] == -1) {
       rules[from][i] = to;
@@ -31,12 +31,12 @@ internal void push_rule(i32 rules[RULES_SIZE][RULES_SIZE], i32 from, i32 to) {
   }
 }
 
-internal bool sequence_valid(Sequence seq, i32 rules[RULES_SIZE][RULES_SIZE]) {
+internal bool sequence_valid(Sequence seq, s32 rules[RULES_SIZE][RULES_SIZE]) {
   assert(seq.values);
 
-  for (i32 i = 0; i < seq.count; i++) {
-    for (i32 j = i + 1; j < seq.count; j++) {
-      for (i32 k = 0; k < RULES_SIZE; k++) {
+  for (s32 i = 0; i < seq.count; i++) {
+    for (s32 j = i + 1; j < seq.count; j++) {
+      for (s32 k = 0; k < RULES_SIZE; k++) {
         int rule = rules[seq.values[i]][k];
         if (rule == -1) {
           return false;
@@ -65,10 +65,10 @@ int main(void) {
   }
   printf("File loaded successfully.\n");
 
-  i32 rules[RULES_SIZE][RULES_SIZE];
+  s32 rules[RULES_SIZE][RULES_SIZE];
   memset(rules, -1, sizeof(rules));
 
-  i32 section = SECTION_RULES;
+  s32 section = SECTION_RULES;
   size_t accum = 0;
 
   for (char* line = file; line; line = get_next_line(line)) {
