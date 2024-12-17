@@ -3,10 +3,10 @@
 
 #include <Windows.h>
 
+#include <assert.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <assert.h>
 
 typedef uint8_t u8;
 typedef uint16_t u16;
@@ -88,13 +88,13 @@ dedupe char* get_next_line(char* string) {
   if (string == NULL) {
     return NULL;
   }
-  
+
   while (*string && *string != '\n')
     ++string;
-  
+
   if (*string == '\n')
     ++string;
-  
+
   return *string ? string : NULL;
 }
 
@@ -102,17 +102,17 @@ dedupe size_t djc_line_length(char* string) {
   if (string == NULL) {
     return 0;
   }
-  
+
   size_t length = 0;
-  
+
   while (*string && *string != '\n') {
     ++length;
     ++string;
   }
-  
+
   if (*string == '\n')
     ++length;
-  
+
   return length;
 }
 
@@ -146,28 +146,28 @@ dedupe char* djc_get_input_file(const char* exe_relative_path) {
 }
 
 dedupe void djc_convert_crlf_to_lf(char* str) {
-    if (str == NULL) {
-        return;
+  if (str == NULL) {
+    return;
+  }
+
+  char* read = str;   // Pointer to read the string
+  char* write = str;  // Pointer to write the converted string
+
+  while (*read) {
+    if (*read == '\r' && *(read + 1) == '\n') {
+      // Skip '\r' and move to the next character
+      read++;
+      continue;
+    } else {
+      // Copy the current character to the write pointer
+      *write = *read;
+      write++;
     }
+    read++;
+  }
 
-    char* read = str;  // Pointer to read the string
-    char* write = str; // Pointer to write the converted string
-
-    while (*read) {
-        if (*read == '\r' && *(read + 1) == '\n') {
-            // Skip '\r' and move to the next character
-            read++;
-            continue;
-        } else {
-            // Copy the current character to the write pointer
-            *write = *read;
-            write++;
-        }
-        read++;
-    }
-
-    // Null-terminate the modified string
-    *write = '\0';
+  // Null-terminate the modified string
+  *write = '\0';
 }
 
 #endif  // DJC_H_
