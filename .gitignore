@@ -1,3 +1,6 @@
 out/
 
-.vs
+*.vs
+*.obj
+*.idb
+*.pdb
