@@ -9,7 +9,7 @@
 
 #include "../utils/djc.h"
 
-int main(void) {
+s32 main(void) {
   size_t file_size = 0;
   char* input_file_path =
       djc_get_input_file("\\resources\\day_three\\input.txt");
@@ -21,7 +21,7 @@ int main(void) {
   }
 
   char* current = file;
-  long int accumulator = 0;
+  s64 accumulator = 0;
 
   bool enable_muls = true;
 
@@ -65,14 +65,14 @@ int main(void) {
                 ++current;
                 if (*current != '\0') {
                   char* end = NULL;
-                  long int num_one = strtol(current, &end, 10);
+                  s64 num_one = strtol(current, &end, 10);
 
                   // e.g. mul(29* is not valid.
                   if (*end != ',')
                     continue;
 
                   current = end + 1;
-                  long int num_two = strtol(current, &end, 10);
+                  s64 num_two = strtol(current, &end, 10);
 
                   // e.g. mul(29,9\0 or mul(29,9adsjf are not valid.
                   if (*end == ')') {
@@ -92,7 +92,7 @@ int main(void) {
     }
   }
 
-  printf("Answer (d3p2) = %ld\n", accumulator);
+  printf("Answer (d3p2) = %lld\n", accumulator);
 
   return 0;
 }

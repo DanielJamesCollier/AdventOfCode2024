@@ -6,26 +6,26 @@
 
 #include "../utils/djc.h"
 
-internal int num_movements = 4;
-internal int dx[] = {0, 1, 0, -1};
-internal int dy[] = {1, 0, -1, 0};
+internal s32 num_movements = 4;
+internal s32 dx[] = {0, 1, 0, -1};
+internal s32 dy[] = {1, 0, -1, 0};
 internal size_t found = 0;
 
 // Function to check if a word exists starting from (x, y) in a given direction
-internal int search_direction(char** grid,
-                            int rows,
-                            int cols,
-                            int x,
-                            int y,
-                            const char* word,
-                            int dir) {
+internal s32 search_direction(char** grid,
+                              s32 rows,
+                              s32 cols,
+                              s32 x,
+                              s32 y,
+                              const char* word,
+                              s32 dir) {
   assert(grid);
 
   size_t len = strlen(word);
 
-  for (int i = 0; i < (int)len; i++) {
-    int nx = x + i * dx[dir];
-    int ny = y + i * dy[dir];
+  for (s32 i = 0; i < (int)len; i++) {
+    s32 nx = x + i * dx[dir];
+    s32 ny = y + i * dy[dir];
 
     // Check if the position is out of bounds
     if (nx < 0 || nx >= rows || ny < 0 || ny >= cols)
@@ -40,12 +40,12 @@ internal int search_direction(char** grid,
 }
 
 // Function to search for a word in the grid
-internal void find_word(char** grid, int rows, int cols, const char* word) {
+internal void find_word(char** grid, s32 rows, s32 cols, const char* word) {
   assert(grid);
 
-  for (int x = 0; x < rows; x++) {
-    for (int y = 0; y < cols; y++) {
-      for (int dir = 0; dir < num_movements; dir++) {
+  for (s32 x = 0; x < rows; x++) {
+    for (s32 y = 0; y < cols; y++) {
+      for (s32 dir = 0; dir < num_movements; dir++) {
         if (search_direction(grid, rows, cols, x, y, word, dir)) {
           ++found;
         }
@@ -54,19 +54,20 @@ internal void find_word(char** grid, int rows, int cols, const char* word) {
   }
 }
 
-int main(void) {
+s32 main(void) {
   size_t file_size = 0;
   char* input_file_path =
       djc_get_input_file("\\resources\\day_four\\input.txt");
   char* file = djc_load_entire_file(input_file_path, &file_size);
+  //  djc_convert_ctrl_to_lf(file);
 
   if (file == NULL) {
     printf("Failed to load the file input.txt: %s", input_file_path);
     return 0;
   }
 
-  int rows = (int)djc_line_length(file);
-  int cols = 0;
+  s32 rows = (int)djc_line_length(file);
+  s32 cols = 0;
 
   {
     char* current = file;
@@ -78,15 +79,15 @@ int main(void) {
   }
 
   char** array = malloc((size_t)rows * sizeof(char*));
-  for (int i = 0; i < rows; i++) {
+  for (s32 i = 0; i < rows; i++) {
     array[i] = malloc((size_t)cols * sizeof(char));
     if (array[i] == NULL) {
       return 1;
     }
   }
 
-  for (int i = 0; i < rows; i++) {
-    for (int j = 0; j < cols; j++) {
+  for (s32 i = 0; i < rows; i++) {
+    for (s32 j = 0; j < cols; j++) {
       array[i][j] = file[i * (cols + 2) + j];
     }
   }

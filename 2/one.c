@@ -55,8 +55,8 @@ s32 main(void) {
 
   struct reports reports_list;
   reports_list.num_reports = djc_count_lines_in_file(file);
-  reports_list.rep = (struct report*)arena_alloc(
-      mem, reports_list.num_reports * sizeof(struct report));
+  reports_list.rep = (struct report*)arena_alloc(mem, sizeof(struct report),
+                                                 reports_list.num_reports);
 
   if (file == NULL) {
     printf("Failed to load the file input.txt: %s", input_file_path);
@@ -71,7 +71,7 @@ s32 main(void) {
       s32 current_level = atoi(line);
       s32 digits = djc_count_digits(current_level);
 
-      arena_alloc(mem, sizeof(int));
+      arena_alloc(mem, sizeof(int), 1);
       report->level[report->num_levels++] = current_level;
 
       line += digits;

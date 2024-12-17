@@ -12,7 +12,7 @@ internal int compare(const void* a, const void* b) {
 }
 
 int main(void) {
-  struct Arena* mem = arena_create("General");
+  struct Arena* mem = arena_create("General", 80);
   size_t file_size = 0;
   char* input_file_path = djc_get_input_file("\\resources\\day_one\\input.txt");
   char* file = djc_load_entire_file(input_file_path, &file_size);
@@ -24,10 +24,8 @@ int main(void) {
   }
 
   size_t num_lines = djc_count_lines_in_file(file);
-  size_t num_bytes = num_lines * sizeof(s32);
-
-  s32* first_col = arena_alloc(mem, num_bytes);
-  s32* second_col = arena_alloc(mem, num_bytes);
+  s32* first_col = arena_alloc(mem, sizeof(s32), num_lines);
+  s32* second_col = arena_alloc(mem, sizeof(s32), num_lines);
 
   char* current = file;
   size_t i = 0;

@@ -51,7 +51,7 @@ internal bool sequence_valid(Sequence seq, s32 rules[RULES_SIZE][RULES_SIZE]) {
 }
 
 int main(void) {
-  struct Arena* mem = arena_create("General");
+  struct Arena* mem = arena_create("General", 80);
 
   size_t length = 0;
   char* input_file_path =
@@ -63,7 +63,6 @@ int main(void) {
     fprintf(stderr, "Failed to load file\n");
     return 1;
   }
-  printf("File loaded successfully.\n");
 
   s32 rules[RULES_SIZE][RULES_SIZE];
   memset(rules, -1, sizeof(rules));
@@ -92,7 +91,7 @@ int main(void) {
 
       while (*line && *line != '\n') {
         int value = atoi(line);
-        arena_alloc(mem, sizeof(int));
+        arena_alloc(mem, sizeof(int), 1);
         seq.values[seq.count++] = value;
         int digits = djc_count_digits(value);
         line += digits;
@@ -106,7 +105,7 @@ int main(void) {
     }
   }
 
-  printf("answer: %zu\n", accum);
+  printf("Answer (d5p1) = %zu\n", accum);
   arena_free(mem);
   free(file);
   return 0;

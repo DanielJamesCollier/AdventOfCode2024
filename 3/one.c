@@ -37,7 +37,7 @@ s32 main(void) {
         if (*current == '(') {
           current++;
           if (*current == '\0') {
-              break;
+            break;
           }
 
           char* end = NULL;
@@ -58,7 +58,7 @@ s32 main(void) {
     }
     ++current;
   }
-  printf("Answer (d3p1) = %ld\n", accumulator);
+  printf("Answer (d3p1) = %I64d\n", accumulator);
 
   return 0;
 }

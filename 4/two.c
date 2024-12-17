@@ -6,17 +6,17 @@
 
 #include "../utils/djc.h"
 
-internal size_t count_x_mas(char** grid, i32 rows, i32 cols) {
+internal size_t count_x_mas(char** grid, s32 rows, s32 cols) {
   assert(grid);
   size_t found = 0;
 
-  for (i32 x = 0; x < rows; x++) {
-    for (i32 y = 0; y < cols; y++) {
+  for (s32 x = 0; x < rows; x++) {
+    for (s32 y = 0; y < cols; y++) {
       if (grid[y][x] != 'A')
         continue;
 
-      i32 dx = 0;
-      i32 dy = 0;
+      s32 dx = 0;
+      s32 dy = 0;
 
       dx = x - 1;
       dy = y - 1;
@@ -43,7 +43,6 @@ internal size_t count_x_mas(char** grid, i32 rows, i32 cols) {
       char bot_right = grid[dy][dx];
 
       u32 ms = 'M' + 'S';
-
       if ((u32)top_left + (u32)bot_right == ms &&
           (u32)bot_left + (u32)top_right == ms) {
         ++found;
@@ -64,7 +63,7 @@ internal size_t line_length(const char* string) {
   return num;
 }
 
-i32 main(void) {
+s32 main(void) {
   size_t file_size = 0;
   char* input_file_path =
       djc_get_input_file("\\resources\\day_four\\input.txt");
@@ -75,8 +74,8 @@ i32 main(void) {
     return 0;
   }
 
-  i32 rows = (int)line_length(file);
-  i32 cols = 0;
+  s32 rows = (int)line_length(file);
+  s32 cols = 0;
 
   {
     char* current = file;
@@ -88,20 +87,20 @@ i32 main(void) {
   }
 
   char** array = malloc((size_t)rows * sizeof(char*));
-  for (i32 i = 0; i < rows; i++) {
+  for (s32 i = 0; i < rows; i++) {
     array[i] = malloc((size_t)cols * sizeof(char));
     if (array[i] == NULL) {
       return 1;
     }
   }
 
-  for (i32 i = 0; i < rows; i++) {
-    for (i32 j = 0; j < cols; j++) {
+  for (s32 i = 0; i < rows; i++) {
+    for (s32 j = 0; j < cols; j++) {
       array[i][j] = file[i * (cols + 2) + j];
     }
   }
 
-  printf("Answer (d4p2 = %zu\n", count_x_mas(array, (int)rows, (int)cols));
+  printf("Answer (d4p2) = %zu\n", count_x_mas(array, (int)rows, (int)cols));
 
   // OS will do cleanup.
   return 0;
