@@ -6,11 +6,12 @@
 
 #include "../utils/djc.h"
 
-int main(void) {
+s32 main(void) {
   size_t file_size = 0;
   char* input_file_path =
       djc_get_input_file("\\resources\\day_three\\input.txt");
   char* file = djc_load_entire_file(input_file_path, &file_size);
+  djc_convert_crlf_to_lf(file);
 
   if (file == NULL) {
     printf("Failed to load the file input.txt: %s", input_file_path);
@@ -18,7 +19,7 @@ int main(void) {
   }
 
   char* current = file;
-  long int accumulator = 0;
+  s64 accumulator = 0;
 
   while (*current) {
     while (*current && *current != 'm')
@@ -40,7 +41,7 @@ int main(void) {
           }
 
           char* end = NULL;
-          long int num_one = strtol(current, &end, 10);
+          s64 num_one = strtol(current, &end, 10);
           if (*end != ',')
             continue;
 
