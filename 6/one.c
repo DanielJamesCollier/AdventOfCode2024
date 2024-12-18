@@ -181,7 +181,7 @@ internal s32 count_x(s32* grid, s32 width, s32 height) {
   }
 
   // + 1 because we do not allow the guard to exit the grid.
-  // however, the gaurd should exit the grid and leave and X
+  // however, the gaurd should exit the grid and leave an X
   // is his last position.
   return num_x + 1;
 }
