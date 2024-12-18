@@ -10,7 +10,7 @@
 #include "../utils/djc.h"
 
 #define STEP_SPEED 50
-// #define DEBUG_DRAW
+//#define DEBUG_DRAW
 
 enum type { GUARD_UP, GUARD_RIGHT, GUARD_DOWN, GUARD_LEFT, HASH, DOT, X };
 
@@ -21,9 +21,7 @@ internal void print_grid_types_as_string(s32* grid, s32 width, s32 height) {
   assert(grid);
 
   if (print_buffer == NULL) {
-    print_buffer = (char*)malloc(
-        width * height +
-        height);  // Allocate buffer to hold the grid and line breaks
+    print_buffer = (char*)malloc(width * height + height);
   }
 
   s32 buffer_index = 0;
@@ -85,12 +83,13 @@ internal s32 rotate_right(s32 direction) {
   return direction = (direction + 1) % 4;
 }
 
-// returns -1 if not in grid.
-internal s32 get_index_infront(s32 direction,
-                               s32 guard_x,
-                               s32 guard_y,
-                               s32 width,
-                               s32 height) {
+internal void get_index_infront(s32 direction,
+                                s32 guard_x,
+                                s32 guard_y,
+                                s32 width,
+                                s32 height,
+                                s32* out_x,
+                                s32* out_y) {
   s32 new_x = guard_x;
   s32 new_y = guard_y;
 
@@ -112,51 +111,58 @@ internal s32 get_index_infront(s32 direction,
       exit(1);
   }
 
-  if (new_x < 0 || new_x >= width || new_y < 0 || new_y >= height) {
-    return -1;
-  }
-
-  return new_x + new_y * width;
+  *out_x = new_x;
+  *out_y = new_y;
 }
 
 internal void simulate(s32* grid, s32 width, s32 height) {
-  while (true) {
-    // search for the guard.
-    s32 x = 0;
-    s32 y = 0;
-    s32 direction = -1;
+#if defined(DEBUG_DRAW)
+  print_grid_types_as_string(grid, width, height);
+#endif
 
-    for (; y < height; y++) {
-      for (x = 0; x < width; x++) {
-        s32 current = grid[x + y * width];
-        if (current == GUARD_UP || current == GUARD_DOWN ||
-            current == GUARD_LEFT || current == GUARD_RIGHT) {
-          direction = current;
-          goto found;
-        }
+  // search for the guard.
+  // ----
+  s32 x = 0;
+  s32 y = 0;
+  s32 direction = -1;
+
+  for (; y < height; y++) {
+    for (x = 0; x < width; x++) {
+      s32 current = grid[x + y * width];
+      if (current == GUARD_UP || current == GUARD_DOWN ||
+          current == GUARD_LEFT || current == GUARD_RIGHT) {
+        direction = current;
+        goto found_guard;
       }
     }
-  found:
-    if (direction == -1) {
-      printf("guard not found. exiting\n");
-      exit(1);
-    }
+  }
+found_guard:
+  if (direction == -1) {
+    printf("Guard not found.");
+    exit(1);
+  }
+  // ----
 
-    s32 infront = get_index_infront(direction, x, y, width, height);
+  while (true) {
+    s32 new_x = x;
+    s32 new_y = y;
+    get_index_infront(direction, x, y, width, height, &new_x, &new_y);
 
-    if (infront == -1) {
+    if (new_x < 0 || new_x >= width || new_y < 0 || new_y >= height) {
       break;
     }
 
-    if (grid[infront] != HASH) {
-      grid[infront] = direction;
+    if (grid[new_x + new_y * width] != HASH) {
+      grid[new_x + new_y * width] = direction;
       grid[x + y * width] = X;
+      x = new_x;
+      y = new_y;
 #if defined(DEBUG_DRAW)
       print_grid_types_as_string(grid, width, height);
 #endif
     } else {
-      s32 new_direction = rotate_right(direction);
-      grid[x + y * width] = new_direction;
+      direction = rotate_right(direction);
+      grid[x + y * width] = direction;
 #if defined(DEBUG_DRAW)
       print_grid_types_as_string(grid, width, height);
 #endif
