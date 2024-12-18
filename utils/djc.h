@@ -65,6 +65,14 @@ dedupe size_t djc_count_lines_in_file(const char* lines) {
   return num_lines;
 }
 
+dedupe size_t djc_strlen_until_newline(const char* string) {
+  size_t count = 0;
+  while (string[count] != '\0' && string[count] != '\n') {
+    count++;
+  }
+  return count;
+}
+
 dedupe int djc_count_digits(int n) {
   int count = 0;
 
@@ -133,40 +141,93 @@ dedupe char* djc_get_input_file(const char* exe_relative_path) {
         strlen(exe_relative_path) + 1;  // +1 for null-terminator
 
     // Ensure that we have enough space to copy the new path
-    size_t offset = (size_t)(lastBackslash - filePath);  // Cast to size_t
+    size_t offset = (size_t)(lastBackslash - filePath);
     if (lastBackslash + 1 + inputFileLength <= filePath + sizeof(filePath)) {
       snprintf(lastBackslash + 1, sizeof(filePath) - offset - 1, "%s",
                exe_relative_path);
     } else {
-      return NULL;  // Buffer overflow protection
+      return NULL;
     }
   }
 
   return filePath;  // Return the modified file path
 }
 
-dedupe void djc_convert_crlf_to_lf(char* str) {
-  if (str == NULL) {
+// From:
+//   The quick brown fox\r\n
+// To:
+//   The quick brown fox\n\0
+dedupe void djc_convert_crlf_to_lf(char* string) {
+  if (string == NULL) {
     return;
   }
 
-  char* read = str;   // Pointer to read the string
-  char* write = str;  // Pointer to write the converted string
+  char* read = string;
+  char* write = string;
 
   while (*read) {
     if (*read == '\r' && *(read + 1) == '\n') {
-      // Skip '\r' and move to the next character
       read++;
       continue;
     } else {
-      // Copy the current character to the write pointer
       *write = *read;
       write++;
     }
     read++;
   }
 
-  // Null-terminate the modified string
+  *write = '\0';
+}
+
+// From:
+//   The quick brown fox\n\0
+// To:
+//   The quick brown fox\0
+dedupe void djc_strip_lf(char* string) {
+  if (string == NULL) {
+    return;
+  }
+
+  char* read = string;
+  char* write = string;
+
+  while (*read) {
+    if (*(read) == '\n') {
+      read++;
+      continue;
+    } else {
+      *write = *read;
+      write++;
+    }
+    read++;
+  }
+
+  *write = '\0';
+}
+
+// From:
+//   The quick brown fox\r\n\0
+// To:
+//   The quick brown fox\0
+dedupe void djc_strip_crlf(char* string) {
+  if (string == NULL) {
+    return;
+  }
+
+  char* read = string;
+  char* write = string;
+
+  while (*read) {
+    if (*read == '\r' && *(read + 1) == '\n') {
+      read += 2;
+      continue;
+    } else {
+      *write = *read;
+      write++;
+    }
+    read++;
+  }
+
   *write = '\0';
 }
 
