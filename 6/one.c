@@ -12,7 +12,7 @@
 #define STEP_SPEED 50
 // #define DEBUG_DRAW
 
-enum type { GUARD_UP, GUARD_DOWN, GUARD_LEFT, GUARD_RIGHT, HASH, DOT, X };
+enum type { GUARD_UP, GUARD_RIGHT, GUARD_DOWN, GUARD_LEFT, HASH, DOT, X };
 
 #if defined(DEBUG_DRAW)
 static char* print_buffer = NULL;
@@ -80,27 +80,9 @@ internal void print_grid_types_as_string(s32* grid, s32 width, s32 height) {
 }
 #endif
 
-// returns the new direction given the starting direction
 internal s32 rotate_right(s32 direction) {
-  switch (direction) {
-    case GUARD_UP: {
-      direction = GUARD_RIGHT;
-    } break;
-    case GUARD_DOWN: {
-      direction = GUARD_LEFT;
-    } break;
-    case GUARD_LEFT: {
-      direction = GUARD_UP;
-    } break;
-    case GUARD_RIGHT: {
-      direction = GUARD_DOWN;
-    } break;
-    default: {
-      printf("direction not valid");
-      exit(1);
-    } break;
-  }
-  return direction;
+  // nice trick due to the ordering of the direction enum.
+  return direction = (direction + 1) % 4;
 }
 
 // returns -1 if not in grid.
