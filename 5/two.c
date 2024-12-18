@@ -37,7 +37,7 @@ internal bool sequence_valid(Sequence seq, s32 rules[RULES_SIZE][RULES_SIZE]) {
   for (s32 i = 0; i < seq.count; i++) {
     for (s32 j = i + 1; j < seq.count; j++) {
       for (s32 k = 0; k < RULES_SIZE; k++) {
-        int rule = rules[seq.values[i]][k];
+        s32 rule = rules[seq.values[i]][k];
         if (rule == -1) {
           return false;
         }
@@ -70,7 +70,7 @@ internal s32 compare_with_context(void* context, const void* a, const void* b) {
   return -1;
 }
 
-int main(void) {
+s32 main(void) {
   struct Arena* mem = arena_create("General", 80);
 
   size_t length = 0;
@@ -99,7 +99,7 @@ int main(void) {
     }
 
     if (section == SECTION_RULES) {
-      int from, to;
+      s32 from, to;
       if (sscanf(line, "%d|%d", &from, &to) == 2) {
         push_rule(rules, from, to);
       }
@@ -110,10 +110,10 @@ int main(void) {
       };
 
       while (*line && *line != '\n') {
-        int value = atoi(line);
+        s32 value = atoi(line);
         arena_alloc(mem, sizeof(int), 1);
         seq.values[seq.count++] = value;
-        int digits = djc_count_digits(value);
+        s32 digits = djc_count_digits(value);
         line += digits;
 
         if (*line && *line == ',')
