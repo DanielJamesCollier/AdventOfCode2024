@@ -21,7 +21,7 @@ internal void print_grid_types_as_string(s32* grid, s32 width, s32 height) {
   assert(grid);
 
   if (print_buffer == NULL) {
-    print_buffer = (char*)malloc(width * height + height);
+    print_buffer = (char*)malloc(width * height + height + 1);
   }
 
   s32 buffer_index = 0;
