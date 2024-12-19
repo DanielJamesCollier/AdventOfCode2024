@@ -58,7 +58,7 @@ dedupe size_t djc_count_lines_in_file(const char* lines) {
 
   size_t num_lines = 0;
   while (*lines++) {
-    if (*lines == '\n') {
+    if (*lines == '\n' || *lines == '\0') {
       ++num_lines;
     }
   }
