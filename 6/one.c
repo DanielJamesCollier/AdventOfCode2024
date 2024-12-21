@@ -83,34 +83,21 @@ internal s32 rotate_right(s32 direction) {
   return direction = (direction + 1) % 4;
 }
 
-internal void get_index_infront(s32 direction,
-                                s32 guard_x,
-                                s32 guard_y,
-                                s32* out_x,
-                                s32* out_y) {
-  s32 new_x = guard_x;
-  s32 new_y = guard_y;
+internal void get_index_infront(s32 direction, s32 guard_x, s32 guard_y, s32* out_x, s32* out_y) {
+  static const s32 offsets[4][2] = {
+    {0, -1}, // UP
+    {1,  0}, // RIGHT
+    {0,  1}, // DOWN
+    {-1, 0}  // LEFT
+  };
 
-  switch (direction) {
-    case GUARD_UP:
-      new_y -= 1;
-      break;
-    case GUARD_DOWN:
-      new_y += 1;
-      break;
-    case GUARD_LEFT:
-      new_x -= 1;
-      break;
-    case GUARD_RIGHT:
-      new_x += 1;
-      break;
-    default:
-      printf("direction is not valid");
-      exit(1);
+  if (direction < GUARD_UP || direction > GUARD_LEFT) {
+    printf("direction is not valid");
+    exit(1);
   }
 
-  *out_x = new_x;
-  *out_y = new_y;
+  *out_x = guard_x + offsets[direction][0];
+  *out_y = guard_y + offsets[direction][1];
 }
 
 internal void simulate(s32* grid, s32 width, s32 height) {
