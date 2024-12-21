@@ -12,17 +12,7 @@
 #define STEP_SPEED 100
 #define DEBUG_DRAW
 
-enum type {
-  GUARD_UP,
-  GUARD_RIGHT,
-  GUARD_DOWN,
-  GUARD_LEFT,
-  HASH,
-  DOT,
-  HORIZONTAL,
-  VERTICAL,
-  WALL
-};
+enum type { UP, RIGHT, DOWN, LEFT, HASH, DOT, HORIZONTAL, VERTICAL, WALL };
 
 #if defined(DEBUG_DRAW)
 static char* print_buffer = NULL;
@@ -41,16 +31,16 @@ internal void print_grid_types_as_string(s32* grid, s32 width, s32 height) {
       s32 type = grid[x + y * width];
       char c;
       switch (type) {
-        case GUARD_UP:
+        case UP:
           c = '^';
           break;
-        case GUARD_DOWN:
+        case DOWN:
           c = 'v';
           break;
-        case GUARD_LEFT:
+        case LEFT:
           c = '<';
           break;
-        case GUARD_RIGHT:
+        case RIGHT:
           c = '>';
           break;
         case HASH:
@@ -99,64 +89,27 @@ internal s32 rotate_right(s32 direction) {
   return direction = (direction + 1) % 4;
 }
 
-internal void get_index_to_right(s32 direction,
+internal void get_relative_index(s32 guard_direction,
+                                 s32 direction,
                                  s32 guard_x,
                                  s32 guard_y,
                                  s32* out_x,
                                  s32* out_y) {
-  s32 new_x = guard_x;
-  s32 new_y = guard_y;
+  static const s32 offsets[4][2] = {
+      {0, -1},  // UP
+      {1, 0},   // RIGHT
+      {0, 1},   // DOWN
+      {-1, 0}   // LEFT
+  };
 
-  switch (direction) {
-    case GUARD_UP:
-      new_x += 1;
-      break;
-    case GUARD_DOWN:
-      new_x -= 1;
-      break;
-    case GUARD_LEFT:
-      new_y -= 1;
-      break;
-    case GUARD_RIGHT:
-      new_y += 1;
-      break;
-    default:
-      printf("direction is not valid");
-      exit(1);
+  if (guard_direction < UP || guard_direction > LEFT) {
+    printf("direction is not valid");
+    exit(1);
   }
 
-  *out_x = new_x;
-  *out_y = new_y;
-}
-
-internal void get_index_infront(s32 direction,
-                                s32 guard_x,
-                                s32 guard_y,
-                                s32* out_x,
-                                s32* out_y) {
-  s32 new_x = guard_x;
-  s32 new_y = guard_y;
-
-  switch (direction) {
-    case GUARD_UP:
-      new_y -= 1;
-      break;
-    case GUARD_DOWN:
-      new_y += 1;
-      break;
-    case GUARD_LEFT:
-      new_x -= 1;
-      break;
-    case GUARD_RIGHT:
-      new_x += 1;
-      break;
-    default:
-      printf("direction is not valid");
-      exit(1);
-  }
-
-  *out_x = new_x;
-  *out_y = new_y;
+  s32 index = (guard_direction + direction) % 4;
+  *out_x = guard_x + offsets[index][0];
+  *out_y = guard_y + offsets[index][1];
 }
 
 internal s32 is_trail(s32 val) {
@@ -166,12 +119,12 @@ internal s32 is_trail(s32 val) {
 internal s32 guard_to_adjecent_trail(s32 direction) {
   s32 trail;
   switch (direction) {
-    case GUARD_DOWN:
-    case GUARD_UP:
+    case DOWN:
+    case UP:
       trail = HORIZONTAL;
       break;
-    case GUARD_RIGHT:
-    case GUARD_LEFT:
+    case RIGHT:
+    case LEFT:
       trail = VERTICAL;
       break;
     default:
@@ -184,12 +137,12 @@ internal s32 guard_to_adjecent_trail(s32 direction) {
 internal s32 dir_to_trail(s32 direction) {
   s32 trail;
   switch (direction) {
-    case GUARD_UP:
-    case GUARD_DOWN:
+    case UP:
+    case DOWN:
       trail = VERTICAL;
       break;
-    case GUARD_RIGHT:
-    case GUARD_LEFT:
+    case RIGHT:
+    case LEFT:
       trail = HORIZONTAL;
       break;
     default:
@@ -221,8 +174,7 @@ internal s32 simulate(s32* grid, s32 width, s32 height) {
   for (; y < height; y++) {
     for (x = 0; x < width; x++) {
       s32 current = grid[x + y * width];
-      if (current == GUARD_UP || current == GUARD_DOWN ||
-          current == GUARD_LEFT || current == GUARD_RIGHT) {
+      if (current >= UP && current <= RIGHT) {
         direction = current;
         goto found_guard;
       }
@@ -238,7 +190,7 @@ found_guard:
   while (true) {
     s32 front_x;
     s32 front_y;
-    get_index_infront(direction, x, y, &front_x, &front_y);
+    get_relative_index(direction, UP, x, y, &front_x, &front_y);
     s32 index_infront = front_x + front_y * width;
 
     // If we are next to the edge of the grid and our direction is pointing
@@ -259,7 +211,7 @@ found_guard:
       {
         s32 right_x;
         s32 right_y;
-        get_index_to_right(direction, x, y, &right_x, &right_y);
+        get_relative_index(direction, RIGHT, x, y, &right_x, &right_y);
         s32 right_index = right_x + right_y * width;
 
         if (right_x >= 0 && right_x < width && right_y >= 0 &&
@@ -268,7 +220,7 @@ found_guard:
           // printf("%d %d\n", right_x, right_y);
           ++num_obstructions;
 
-          get_index_infront(direction, x, y, &front_x, &front_y);
+          get_relative_index(direction, UP, x, y, &front_x, &front_y);
           index_infront = front_x + front_y * width;
           obs[index_infront] = WALL;  // we need to plus 1 in the direction tha
                                       // tthe guard is facing.
@@ -328,19 +280,19 @@ s32 main(void) {
       } break;
 
       case '^': {
-        grid[i] = GUARD_UP;
+        grid[i] = UP;
       } break;
 
       case 'v': {
-        grid[i] = GUARD_DOWN;
+        grid[i] = DOWN;
       } break;
 
       case '<': {
-        grid[i] = GUARD_LEFT;
+        grid[i] = LEFT;
       } break;
 
       case '>': {
-        grid[i] = GUARD_RIGHT;
+        grid[i] = RIGHT;
       } break;
 
       case '-': {
