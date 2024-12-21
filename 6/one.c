@@ -129,8 +129,7 @@ internal void simulate(s32* grid, s32 width, s32 height) {
   for (; y < height; y++) {
     for (x = 0; x < width; x++) {
       s32 current = grid[x + y * width];
-      if (current == GUARD_UP || current == GUARD_DOWN ||
-          current == GUARD_LEFT || current == GUARD_RIGHT) {
+      if (current => GUARD_UP && current <= GUARD_LEFT) {
         direction = current;
         goto found_guard;
       }
