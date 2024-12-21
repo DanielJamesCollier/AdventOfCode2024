@@ -12,7 +12,17 @@
 #define STEP_SPEED 100
 #define DEBUG_DRAW
 
-enum type { GUARD_UP, GUARD_RIGHT, GUARD_DOWN, GUARD_LEFT, HASH, DOT, HORIZONTAL, VERTICAL, WALL};
+enum type {
+  GUARD_UP,
+  GUARD_RIGHT,
+  GUARD_DOWN,
+  GUARD_LEFT,
+  HASH,
+  DOT,
+  HORIZONTAL,
+  VERTICAL,
+  WALL
+};
 
 #if defined(DEBUG_DRAW)
 static char* print_buffer = NULL;
@@ -155,8 +165,7 @@ internal s32 is_trail(s32 val) {
 
 internal s32 guard_to_adjecent_trail(s32 direction) {
   s32 trail;
-  switch (direction) 
-  {
+  switch (direction) {
     case GUARD_DOWN:
     case GUARD_UP:
       trail = HORIZONTAL;
@@ -164,7 +173,7 @@ internal s32 guard_to_adjecent_trail(s32 direction) {
     case GUARD_RIGHT:
     case GUARD_LEFT:
       trail = VERTICAL;
-    break;
+      break;
     default:
       printf("Failed to map guard direction to trail direction.");
       exit(1);
@@ -174,13 +183,13 @@ internal s32 guard_to_adjecent_trail(s32 direction) {
 
 internal s32 dir_to_trail(s32 direction) {
   s32 trail;
-  switch(direction) {
-    case GUARD_UP: 
-    case GUARD_DOWN: 
+  switch (direction) {
+    case GUARD_UP:
+    case GUARD_DOWN:
       trail = VERTICAL;
       break;
-    case GUARD_RIGHT: 
-    case GUARD_LEFT: 
+    case GUARD_RIGHT:
+    case GUARD_LEFT:
       trail = HORIZONTAL;
       break;
     default:
@@ -239,7 +248,6 @@ found_guard:
     }
 
     if (grid[index_infront] == DOT || is_trail(grid[index_infront])) {
-
       grid[index_infront] = direction;
       grid[x + y * width] = dir_to_trail(direction);
       x = front_x;
@@ -255,13 +263,15 @@ found_guard:
         s32 right_index = right_x + right_y * width;
 
         if (right_x >= 0 && right_x < width && right_y >= 0 &&
-            right_y < height && grid[right_index] == guard_to_adjecent_trail(direction)) {
-          //printf("%d %d\n", right_x, right_y);
+            right_y < height &&
+            grid[right_index] == guard_to_adjecent_trail(direction)) {
+          // printf("%d %d\n", right_x, right_y);
           ++num_obstructions;
 
           get_index_infront(direction, x, y, &front_x, &front_y);
           index_infront = front_x + front_y * width;
-          obs[index_infront] = WALL; // we need to plus 1 in the direction tha tthe guard is facing.
+          obs[index_infront] = WALL;  // we need to plus 1 in the direction tha
+                                      // tthe guard is facing.
 #if defined(DEBUG_DRAW)
           print_grid_types_as_string(obs, width, height);
 
@@ -332,7 +342,7 @@ s32 main(void) {
       case '>': {
         grid[i] = GUARD_RIGHT;
       } break;
-                
+
       case '-': {
         grid[i] = HORIZONTAL;
       } break;

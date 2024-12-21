@@ -10,7 +10,7 @@
 #include "../utils/djc.h"
 
 #define STEP_SPEED 50
-//#define DEBUG_DRAW
+// #define DEBUG_DRAW
 
 enum type { GUARD_UP, GUARD_RIGHT, GUARD_DOWN, GUARD_LEFT, HASH, DOT, X };
 
@@ -83,12 +83,16 @@ internal s32 rotate_right(s32 direction) {
   return direction = (direction + 1) % 4;
 }
 
-internal void get_index_infront(s32 direction, s32 guard_x, s32 guard_y, s32* out_x, s32* out_y) {
+internal void get_index_infront(s32 direction,
+                                s32 guard_x,
+                                s32 guard_y,
+                                s32* out_x,
+                                s32* out_y) {
   static const s32 offsets[4][2] = {
-    {0, -1}, // UP
-    {1,  0}, // RIGHT
-    {0,  1}, // DOWN
-    {-1, 0}  // LEFT
+      {0, -1},  // UP
+      {1, 0},   // RIGHT
+      {0, 1},   // DOWN
+      {-1, 0}   // LEFT
   };
 
   if (direction < GUARD_UP || direction > GUARD_LEFT) {
@@ -114,7 +118,7 @@ internal void simulate(s32* grid, s32 width, s32 height) {
   for (; y < height; y++) {
     for (x = 0; x < width; x++) {
       s32 current = grid[x + y * width];
-      if (current => GUARD_UP && current <= GUARD_LEFT) {
+      if (current >= GUARD_UP && current <= GUARD_LEFT) {
         direction = current;
         goto found_guard;
       }
@@ -156,7 +160,7 @@ found_guard:
 
 internal s32 count_x(s32* grid, s32 width, s32 height) {
   s32 num_x = 0;
-  for (s32 i = 0; y < width * height; i++) {
+  for (s32 i = 0; i < width * height; i++) {
     if (grid[i] == X) {
       num_x++;
     }
