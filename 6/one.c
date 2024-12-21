@@ -169,11 +169,9 @@ found_guard:
 
 internal s32 count_x(s32* grid, s32 width, s32 height) {
   s32 num_x = 0;
-  for (s32 y = 0; y < height; y++) {
-    for (s32 x = 0; x < width; x++) {
-      if (grid[x + y * width] == X) {
-        num_x++;
-      }
+  for (s32 i = 0; y < width * height; i++) {
+    if (grid[i] == X) {
+      num_x++;
     }
   }
 
