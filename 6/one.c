@@ -165,11 +165,7 @@ internal s32 count_x(s32* grid, s32 width, s32 height) {
       num_x++;
     }
   }
-
-  // + 1 because we do not allow the guard to exit the grid.
-  // however, the gaurd should exit the grid and leave an X
-  // is his last position.
-  return num_x + 1;
+  return num_x;
 }
 
 s32 main(void) {
@@ -228,7 +224,9 @@ s32 main(void) {
 
   simulate(grid, width, height);
 
-  printf("Answer (d6p1) = %u\n", count_x(grid, width, height));
+  // + 1 as we do not allow the guard to exit the grid.
+  // The question expects it too.
+  printf("Answer (d6p1) = %u\n", count_x(grid, width, height) + 1);
 
   free(grid);
   free(file);
