@@ -103,7 +103,12 @@ internal void get_relative_index(s32 guard_direction,
   };
 
   if (guard_direction < UP || guard_direction > LEFT) {
-    printf("direction is not valid");
+    printf("guard_direction is not valid. dir=%u", guard_direction);
+    exit(1);
+  }
+
+  if (direction < UP || direction > LEFT) {
+    printf("direction is not valid. dir=%u", direction);
     exit(1);
   }
 
