@@ -86,8 +86,6 @@ internal s32 rotate_right(s32 direction) {
 internal void get_index_infront(s32 direction,
                                 s32 guard_x,
                                 s32 guard_y,
-                                s32 width,
-                                s32 height,
                                 s32* out_x,
                                 s32* out_y) {
   s32 new_x = guard_x;
@@ -145,7 +143,7 @@ found_guard:
   while (true) {
     s32 new_x = x;
     s32 new_y = y;
-    get_index_infront(direction, x, y, width, height, &new_x, &new_y);
+    get_index_infront(direction, x, y, &new_x, &new_y);
 
     if (new_x < 0 || new_x >= width || new_y < 0 || new_y >= height) {
       break;
