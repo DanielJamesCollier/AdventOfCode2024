@@ -242,27 +242,83 @@ merge bool djc_is_digit(char c) {
   return c >= '0' && c <= '9';
 }
 
-// End returns the character after the last digit.
-merge s32 djc_atoi(const char* string, const char** end) {
+enum djc_atoi_error {
+  DJC_ATOI_SUCCESS = 1,
+  DJC_ATOI_ERROR_INVALID_CHAR,
+  DJC_ATOI_ERROR_RANGE,
+  DJC_ATOI_ERROR_EOL
+};
+
+struct djc_atoi_result {
+  s32 value;
+  enum djc_atoi_error success;
+};
+
+merge struct djc_atoi_result djc_atoi(const char* restrict string,
+                                      const char** restrict end) {
   assert(string);
 
   bool minus = false;
-  s32 result = 0;
+  s32 digit = 0;
+  struct djc_atoi_result result = {0, DJC_ATOI_SUCCESS};
+
+  if (*string == '\0') {
+    result.success = DJC_ATOI_ERROR_EOL;
+    if (end)
+      *end = string;
+    return result;
+  }
 
   while (djc_is_space(*string))
     string++;
 
-  if (*string == '+')
+  if (*string == '+') {
     ++string;
-  else if (*string == '-') {
+
+    // Error Check: check if the next character is a non-digit
+    if (*string == '\0' || !djc_is_digit(*string)) {
+      if (end)
+        *end = string - 1;
+      result.success = DJC_ATOI_ERROR_INVALID_CHAR;
+      return result;
+    }
+  } else if (*string == '-') {
     ++string;
     minus = true;
+
+    // Error Check: check if the next character is a non-digit
+    if (*string == '\0' || !djc_is_digit(*string)) {
+      if (end)
+        *end = string - 1;
+      result.success = DJC_ATOI_ERROR_INVALID_CHAR;
+      return result;
+    }
   }
 
   while (djc_is_digit(*string)) {
-    s32 digit = *string - '0';
-    result *= 10;
-    result -= digit;  // Support INT_MIN.
+    digit = *string - '0';
+    // Check for overflow before multiplying and subtracting
+    if (minus) {
+      if (result.value < (INT_MIN + digit) / 10) {
+        result.success = DJC_ATOI_ERROR_RANGE;
+        result.value = INT_MIN;
+        if (end) {
+          *end = string;
+        }
+        return result;
+      }
+      result.value = result.value * 10 - digit;
+    } else {
+      if (result.value > (INT_MAX - digit) / 10) {
+        result.success = DJC_ATOI_ERROR_RANGE;
+        result.value = INT_MAX;
+        if (end) {
+          *end = string;
+        }
+        return result;
+      }
+      result.value = result.value * 10 + digit;
+    }
     ++string;
   }
 
@@ -270,7 +326,7 @@ merge s32 djc_atoi(const char* string, const char** end) {
     *end = string;
   }
 
-  return minus ? result : -result;
+  return result;
 }
 
 #endif  // DJC_H_

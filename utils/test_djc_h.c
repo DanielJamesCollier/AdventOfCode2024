@@ -3,13 +3,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#define SELECT_FORMAT(type) \
-  _Generic((type),          \
-      int: "%d",            \
-      float: "%f",          \
-      double: "%f",         \
-      char*: "%s",          \
-      const char*: "%s",    \
+#define SELECT_FORMAT(type)      \
+  _Generic((type),               \
+      int: "%d",                 \
+      unsigned: "%u",            \
+      enum djc_atoi_error: "%d", \
       default: "%p")
 
 #define CHECK_EQUAL(actual, expected)                                     \
@@ -55,55 +53,163 @@ internal void test_djc_atoi() {
   {
     char* a = "1";
     char* end = NULL;
-    CHECK_EQUAL(djc_atoi(a, &end), 1);
+    struct djc_atoi_result result = djc_atoi(a, &end);
+
+    CHECK_EQUAL(result.value, 1);
+    CHECK_EQUAL(result.success, DJC_ATOI_SUCCESS);
     CHECK_EQUAL(end, a + 1);
   }
   {
     char* a = "10";
     char* end = NULL;
-    CHECK_EQUAL(djc_atoi(a, &end), 10);
+    struct djc_atoi_result result = djc_atoi(a, &end);
+
+    CHECK_EQUAL(result.success, DJC_ATOI_SUCCESS);
+    CHECK_EQUAL(result.value, 10);
     CHECK_EQUAL(end, a + 2);
   }
   {
     char* a = "01";
     char* end = NULL;
-    CHECK_EQUAL(djc_atoi(a, &end), 1);
+    struct djc_atoi_result result = djc_atoi(a, &end);
+
+    CHECK_EQUAL(result.success, DJC_ATOI_SUCCESS);
+    CHECK_EQUAL(result.value, 1);
     CHECK_EQUAL(end, a + 2);
   }
   {
     char* a = "1a";
     char* end = NULL;
-    CHECK_EQUAL(djc_atoi(a, &end), 1);
+    struct djc_atoi_result result = djc_atoi(a, &end);
+
+    CHECK_EQUAL(result.success, DJC_ATOI_SUCCESS);
+    CHECK_EQUAL(result.value, 1);
     CHECK_EQUAL(end, a + 1);
   }
   {
     char* a = "-2147483648";
     char* end = NULL;
-    CHECK_EQUAL(djc_atoi(a, &end), INT_MIN);
+    struct djc_atoi_result result = djc_atoi(a, &end);
+
+    CHECK_EQUAL(result.success, DJC_ATOI_SUCCESS);
+    CHECK_EQUAL(result.value, INT_MIN);
     CHECK_EQUAL(end, a + 11);
   }
   {
     char* a = "2147483647";
     char* end = NULL;
-    CHECK_EQUAL(djc_atoi(a, &end), INT_MAX);
+    struct djc_atoi_result result = djc_atoi(a, &end);
+
+    CHECK_EQUAL(result.success, DJC_ATOI_SUCCESS);
+    CHECK_EQUAL(result.value, INT_MAX);
     CHECK_EQUAL(end, a + 10);
+  }
+  {
+    char* a = "2147483648";
+    char* end = NULL;
+    struct djc_atoi_result result = djc_atoi(a, &end);
+
+    CHECK_EQUAL(result.success, DJC_ATOI_ERROR_RANGE);
+    CHECK_EQUAL(result.value, INT_MAX);
+    CHECK_EQUAL(end, a + 9);
+  }
+  {
+    char* a = "-2147483649";
+    char* end = NULL;
+    struct djc_atoi_result result = djc_atoi(a, &end);
+
+    CHECK_EQUAL(result.success, DJC_ATOI_ERROR_RANGE);
+    CHECK_EQUAL(result.value, INT_MIN);
+    /// CHECK_EQUAL(end, a + 9);
   }
   {
     char* a = "+1";
     char* end = NULL;
-    CHECK_EQUAL(djc_atoi(a, &end), 1);
+    struct djc_atoi_result result = djc_atoi(a, &end);
+
+    CHECK_EQUAL(result.success, DJC_ATOI_SUCCESS);
+    CHECK_EQUAL(result.value, 1);
     CHECK_EQUAL(end, a + 2);
   }
   {
     char* a = "";
     char* end = NULL;
-    CHECK_EQUAL(djc_atoi(a, &end), 0);
+    struct djc_atoi_result result = djc_atoi(a, &end);
+
+    CHECK_EQUAL(result.success, DJC_ATOI_ERROR_EOL);
+    CHECK_EQUAL(result.value, 0);
     CHECK_EQUAL(end, a);
   }
   {
     char* a = "\0";
     char* end = NULL;
-    CHECK_EQUAL(djc_atoi(a, &end), 0);
+    struct djc_atoi_result result = djc_atoi(a, &end);
+
+    CHECK_EQUAL(result.success, DJC_ATOI_ERROR_EOL);
+    CHECK_EQUAL(result.value, 0);
+    CHECK_EQUAL(end, a);
+  }
+  {
+    char* a = "   1";
+    char* end = NULL;
+    struct djc_atoi_result result = djc_atoi(a, &end);
+
+    CHECK_EQUAL(result.success, DJC_ATOI_SUCCESS);
+    CHECK_EQUAL(result.value, 1);
+    CHECK_EQUAL(end, a + 4);
+  }
+  {
+    char* a = "+ 1";
+    char* end = NULL;
+    struct djc_atoi_result result = djc_atoi(a, &end);
+
+    CHECK_EQUAL(result.success, DJC_ATOI_ERROR_INVALID_CHAR);
+    CHECK_EQUAL(result.value, 0);
+    CHECK_EQUAL(end, a);
+  }
+  {
+    char* a = "- 1";
+    char* end = NULL;
+    struct djc_atoi_result result = djc_atoi(a, &end);
+
+    CHECK_EQUAL(result.success, DJC_ATOI_ERROR_INVALID_CHAR);
+    CHECK_EQUAL(result.value, 0);
+    CHECK_EQUAL(end, a);
+  }
+  {
+    char* a = "--1";
+    char* end = NULL;
+    struct djc_atoi_result result = djc_atoi(a, &end);
+
+    CHECK_EQUAL(result.success, DJC_ATOI_ERROR_INVALID_CHAR);
+    CHECK_EQUAL(result.value, 0);
+    CHECK_EQUAL(end, a);
+  }
+  {
+    char* a = "++1";
+    char* end = NULL;
+    struct djc_atoi_result result = djc_atoi(a, &end);
+
+    CHECK_EQUAL(result.success, DJC_ATOI_ERROR_INVALID_CHAR);
+    CHECK_EQUAL(result.value, 0);
+    CHECK_EQUAL(end, a);
+  }
+  {
+    char* a = "+";
+    char* end = NULL;
+    struct djc_atoi_result result = djc_atoi(a, &end);
+
+    CHECK_EQUAL(result.success, DJC_ATOI_ERROR_INVALID_CHAR);
+    CHECK_EQUAL(result.value, 0);
+    CHECK_EQUAL(end, a);
+  }
+  {
+    char* a = "-";
+    char* end = NULL;
+    struct djc_atoi_result result = djc_atoi(a, &end);
+
+    CHECK_EQUAL(result.success, DJC_ATOI_ERROR_INVALID_CHAR);
+    CHECK_EQUAL(result.value, 0);
     CHECK_EQUAL(end, a);
   }
 }
