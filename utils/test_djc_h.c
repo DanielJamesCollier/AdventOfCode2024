@@ -3,11 +3,24 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#define SELECT_FORMAT(type) \
+  _Generic((type),          \
+      int: "%d",            \
+      float: "%f",          \
+      double: "%f",         \
+      char*: "%s",          \
+      const char*: "%s",    \
+      default: "%p")
+
 #define CHECK_EQUAL(actual, expected)                                     \
   do {                                                                    \
     if ((actual) != (expected)) {                                         \
       printf("Assertion failed: file %s, line %d\n", __FILE__, __LINE__); \
-      printf("  Actual: %d, Expected: %d\n", actual, expected);           \
+      printf("  Actual: ");                                               \
+      printf(SELECT_FORMAT(actual), (actual));                            \
+      printf(", Expected: ");                                             \
+      printf(SELECT_FORMAT(expected), (expected));                        \
+      printf("\n");                                                       \
       exit(EXIT_FAILURE);                                                 \
     }                                                                     \
   } while (0)
@@ -38,8 +51,66 @@ internal void test_djc_count_lines_in_file() {
   }
 }
 
+internal void test_djc_atoi() {
+  {
+    char* a = "1";
+    char* end = NULL;
+    CHECK_EQUAL(djc_atoi(a, &end), 1);
+    CHECK_EQUAL(end, a + 1);
+  }
+  {
+    char* a = "10";
+    char* end = NULL;
+    CHECK_EQUAL(djc_atoi(a, &end), 10);
+    CHECK_EQUAL(end, a + 2);
+  }
+  {
+    char* a = "01";
+    char* end = NULL;
+    CHECK_EQUAL(djc_atoi(a, &end), 1);
+    CHECK_EQUAL(end, a + 2);
+  }
+  {
+    char* a = "1a";
+    char* end = NULL;
+    CHECK_EQUAL(djc_atoi(a, &end), 1);
+    CHECK_EQUAL(end, a + 1);
+  }
+  {
+    char* a = "-2147483648";
+    char* end = NULL;
+    CHECK_EQUAL(djc_atoi(a, &end), INT_MIN);
+    CHECK_EQUAL(end, a + 11);
+  }
+  {
+    char* a = "2147483647";
+    char* end = NULL;
+    CHECK_EQUAL(djc_atoi(a, &end), INT_MAX);
+    CHECK_EQUAL(end, a + 10);
+  }
+  {
+    char* a = "+1";
+    char* end = NULL;
+    CHECK_EQUAL(djc_atoi(a, &end), 1);
+    CHECK_EQUAL(end, a + 2);
+  }
+  {
+    char* a = "";
+    char* end = NULL;
+    CHECK_EQUAL(djc_atoi(a, &end), 0);
+    CHECK_EQUAL(end, a);
+  }
+  {
+    char* a = "\0";
+    char* end = NULL;
+    CHECK_EQUAL(djc_atoi(a, &end), 0);
+    CHECK_EQUAL(end, a);
+  }
+}
+
 s32 main(void) {
   test_djc_count_lines_in_file();
+  test_djc_atoi();
   puts("All tests passed!");
   return 0;
 }

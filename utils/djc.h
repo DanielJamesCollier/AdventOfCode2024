@@ -4,6 +4,7 @@
 #include <Windows.h>
 
 #include <assert.h>
+#include <stdbool.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -18,13 +19,12 @@ typedef int32_t s32;
 typedef int64_t s64;
 typedef float f32;
 typedef double f64;
-
 #define internal static
 #define persist static
-#define dedupe inline
+#define merge inline
 #define fold __forceinline
 
-dedupe char* djc_load_entire_file(char* filename, size_t* plen) {
+merge char* djc_load_entire_file(char* filename, size_t* plen) {
   assert(filename);
 
   char* text = NULL;
@@ -53,7 +53,7 @@ dedupe char* djc_load_entire_file(char* filename, size_t* plen) {
   return text;
 }
 
-dedupe size_t djc_count_lines_in_file(const char* lines) {
+merge size_t djc_count_lines_in_file(const char* lines) {
   assert(lines);
 
   size_t num_lines = 0;
@@ -67,7 +67,7 @@ dedupe size_t djc_count_lines_in_file(const char* lines) {
   return num_lines;
 }
 
-dedupe size_t djc_strlen_until_newline(const char* string) {
+merge size_t djc_strlen_until_newline(const char* string) {
   size_t count = 0;
   while (string[count] != '\0' && string[count] != '\n') {
     count++;
@@ -75,7 +75,7 @@ dedupe size_t djc_strlen_until_newline(const char* string) {
   return count;
 }
 
-dedupe int djc_count_digits(int n) {
+merge int djc_count_digits(int n) {
   int count = 0;
 
   if (n == 0) {
@@ -94,7 +94,7 @@ dedupe int djc_count_digits(int n) {
   return count;
 }
 
-dedupe char* get_next_line(char* string) {
+merge char* get_next_line(char* string) {
   if (string == NULL) {
     return NULL;
   }
@@ -108,7 +108,7 @@ dedupe char* get_next_line(char* string) {
   return *string ? string : NULL;
 }
 
-dedupe size_t djc_line_length(char* string) {
+merge size_t djc_line_length(char* string) {
   if (string == NULL) {
     return 0;
   }
@@ -126,7 +126,7 @@ dedupe size_t djc_line_length(char* string) {
   return length;
 }
 
-dedupe char* djc_get_input_file(const char* exe_relative_path) {
+merge char* djc_get_input_file(const char* exe_relative_path) {
   assert(exe_relative_path);
 
   persist char filePath[MAX_PATH];  // MAX_PATH is more appropriate than 260
@@ -159,7 +159,7 @@ dedupe char* djc_get_input_file(const char* exe_relative_path) {
 //   The quick brown fox\r\n
 // To:
 //   The quick brown fox\n\0
-dedupe void djc_convert_crlf_to_lf(char* string) {
+merge void djc_convert_crlf_to_lf(char* string) {
   if (string == NULL) {
     return;
   }
@@ -185,7 +185,7 @@ dedupe void djc_convert_crlf_to_lf(char* string) {
 //   The quick brown fox\n\0
 // To:
 //   The quick brown fox\0
-dedupe void djc_strip_lf(char* string) {
+merge void djc_strip_lf(char* string) {
   if (string == NULL) {
     return;
   }
@@ -211,7 +211,7 @@ dedupe void djc_strip_lf(char* string) {
 //   The quick brown fox\r\n\0
 // To:
 //   The quick brown fox\0
-dedupe void djc_strip_crlf(char* string) {
+merge void djc_strip_crlf(char* string) {
   if (string == NULL) {
     return;
   }
@@ -231,6 +231,46 @@ dedupe void djc_strip_crlf(char* string) {
   }
 
   *write = '\0';
+}
+
+merge bool djc_is_space(char c) {
+  return c == ' ' || c == '\f' || c == '\n' || c == '\r' || c == '\t' ||
+         c == '\v';
+}
+
+merge bool djc_is_digit(char c) {
+  return c >= '0' && c <= '9';
+}
+
+// End returns the character after the last digit.
+merge s32 djc_atoi(const char* string, const char** end) {
+  assert(string);
+
+  bool minus = false;
+  s32 result = 0;
+
+  while (djc_is_space(*string))
+    string++;
+
+  if (*string == '+')
+    ++string;
+  else if (*string == '-') {
+    ++string;
+    minus = true;
+  }
+
+  while (djc_is_digit(*string)) {
+    s32 digit = *string - '0';
+    result *= 10;
+    result -= digit;  // Support INT_MIN.
+    ++string;
+  }
+
+  if (end) {
+    *end = string;
+  }
+
+  return minus ? result : -result;
 }
 
 #endif  // DJC_H_
