@@ -49,6 +49,23 @@ internal void test_djc_count_lines_in_file() {
   }
 }
 
+size_t index_after_char(const char* str, s32 c) {
+  assert(str);
+  size_t i = 0;
+  size_t len = strlen(str);
+
+  for (i = 0; i < len; i++) {
+    if (str[i] == c) {
+      break;
+    }
+  }
+  if (i == len) {
+    puts("Error: char not found");
+    exit(1);
+  }
+  return i + 1;
+}
+
 internal void test_djc_atoi() {
   {
     char* a = "1";
@@ -57,7 +74,7 @@ internal void test_djc_atoi() {
 
     CHECK_EQUAL(result.value, 1);
     CHECK_EQUAL(result.success, DJC_ATOI_SUCCESS);
-    CHECK_EQUAL(end, a + 1);
+    CHECK_EQUAL(end, a + index_after_char(a, '1'));
   }
   {
     char* a = "10";
@@ -66,7 +83,7 @@ internal void test_djc_atoi() {
 
     CHECK_EQUAL(result.success, DJC_ATOI_SUCCESS);
     CHECK_EQUAL(result.value, 10);
-    CHECK_EQUAL(end, a + 2);
+    CHECK_EQUAL(end, a + index_after_char(a, '0'));
   }
   {
     char* a = "01";
@@ -75,7 +92,7 @@ internal void test_djc_atoi() {
 
     CHECK_EQUAL(result.success, DJC_ATOI_SUCCESS);
     CHECK_EQUAL(result.value, 1);
-    CHECK_EQUAL(end, a + 2);
+    CHECK_EQUAL(end, a + index_after_char(a, '1'));
   }
   {
     char* a = "1a";
@@ -84,7 +101,7 @@ internal void test_djc_atoi() {
 
     CHECK_EQUAL(result.success, DJC_ATOI_SUCCESS);
     CHECK_EQUAL(result.value, 1);
-    CHECK_EQUAL(end, a + 1);
+    CHECK_EQUAL(end, a + index_after_char(a, '1'));
   }
   {
     char* a = "-2147483648";
@@ -120,7 +137,7 @@ internal void test_djc_atoi() {
 
     CHECK_EQUAL(result.success, DJC_ATOI_ERROR_RANGE);
     CHECK_EQUAL(result.value, INT_MIN);
-    /// CHECK_EQUAL(end, a + 9);
+    CHECK_EQUAL(end, a + 10);
   }
   {
     char* a = "+1";
@@ -129,14 +146,23 @@ internal void test_djc_atoi() {
 
     CHECK_EQUAL(result.success, DJC_ATOI_SUCCESS);
     CHECK_EQUAL(result.value, 1);
-    CHECK_EQUAL(end, a + 2);
+    CHECK_EQUAL(end, a + index_after_char(a, '1'));
+  }
+  {
+    char* a = "-1";
+    char* end = NULL;
+    struct djc_atoi_result result = djc_atoi(a, &end);
+
+    CHECK_EQUAL(result.success, DJC_ATOI_SUCCESS);
+    CHECK_EQUAL(result.value, -1);
+    CHECK_EQUAL(end, a + index_after_char(a, '1'));
   }
   {
     char* a = "";
     char* end = NULL;
     struct djc_atoi_result result = djc_atoi(a, &end);
 
-    CHECK_EQUAL(result.success, DJC_ATOI_ERROR_EOL);
+    CHECK_EQUAL(result.success, DJC_ATOI_EOL);
     CHECK_EQUAL(result.value, 0);
     CHECK_EQUAL(end, a);
   }
@@ -145,9 +171,45 @@ internal void test_djc_atoi() {
     char* end = NULL;
     struct djc_atoi_result result = djc_atoi(a, &end);
 
-    CHECK_EQUAL(result.success, DJC_ATOI_ERROR_EOL);
+    CHECK_EQUAL(result.success, DJC_ATOI_EOL);
     CHECK_EQUAL(result.value, 0);
     CHECK_EQUAL(end, a);
+  }
+  {
+    char* a = "\n";
+    char* end = NULL;
+    struct djc_atoi_result result = djc_atoi(a, &end);
+
+    CHECK_EQUAL(result.success, DJC_ATOI_EOL);
+    CHECK_EQUAL(result.value, 0);
+    CHECK_EQUAL(end, a);
+  }
+  {
+    char* a = "1\n";
+    char* end = NULL;
+    struct djc_atoi_result result = djc_atoi(a, &end);
+
+    CHECK_EQUAL(result.success, DJC_ATOI_SUCCESS);
+    CHECK_EQUAL(result.value, 1);
+    CHECK_EQUAL(end, a + index_after_char(a, '1'));
+  }
+  {
+    char* a = "\0 1";
+    char* end = NULL;
+    struct djc_atoi_result result = djc_atoi(a, &end);
+
+    CHECK_EQUAL(result.success, DJC_ATOI_EOL);
+    CHECK_EQUAL(result.value, 0);
+    CHECK_EQUAL(end, a);
+  }
+  {
+    char* a = "\t\t  1";
+    char* end = NULL;
+    struct djc_atoi_result result = djc_atoi(a, &end);
+
+    CHECK_EQUAL(result.success, DJC_ATOI_SUCCESS);
+    CHECK_EQUAL(result.value, 1);
+    CHECK_EQUAL(end, a + index_after_char(a, '1'));
   }
   {
     char* a = "   1";
@@ -156,7 +218,7 @@ internal void test_djc_atoi() {
 
     CHECK_EQUAL(result.success, DJC_ATOI_SUCCESS);
     CHECK_EQUAL(result.value, 1);
-    CHECK_EQUAL(end, a + 4);
+    CHECK_EQUAL(end, a + index_after_char(a, '1'));
   }
   {
     char* a = "+ 1";

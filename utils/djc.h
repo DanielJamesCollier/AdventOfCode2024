@@ -233,9 +233,13 @@ merge void djc_strip_crlf(char* string) {
   *write = '\0';
 }
 
-merge bool djc_is_space(char c) {
+merge bool djc_is_whitespace(char c) {
   return c == ' ' || c == '\f' || c == '\n' || c == '\r' || c == '\t' ||
          c == '\v';
+}
+
+merge bool djc_is_horizontal_space(char c) {
+  return c == ' ' || c == '\t';
 }
 
 merge bool djc_is_digit(char c) {
@@ -244,9 +248,9 @@ merge bool djc_is_digit(char c) {
 
 enum djc_atoi_error {
   DJC_ATOI_SUCCESS = 1,
+  DJC_ATOI_EOL,
   DJC_ATOI_ERROR_INVALID_CHAR,
-  DJC_ATOI_ERROR_RANGE,
-  DJC_ATOI_ERROR_EOL
+  DJC_ATOI_ERROR_RANGE
 };
 
 struct djc_atoi_result {
@@ -257,28 +261,34 @@ struct djc_atoi_result {
 merge struct djc_atoi_result djc_atoi(const char* restrict string,
                                       const char** restrict end) {
   assert(string);
-
   bool minus = false;
   s32 digit = 0;
   struct djc_atoi_result result = {0, DJC_ATOI_SUCCESS};
+  const char* begin = string;
 
   if (*string == '\0') {
-    result.success = DJC_ATOI_ERROR_EOL;
+    result.success = DJC_ATOI_EOL;
+    if (end)
+      *end = begin;
+    return result;
+  }
+
+  while (djc_is_horizontal_space(*string))
+    string++;
+
+  if (djc_is_whitespace(*string)) {
+    result.success = DJC_ATOI_EOL;
     if (end)
       *end = string;
     return result;
   }
 
-  while (djc_is_space(*string))
-    string++;
-
   if (*string == '+') {
     ++string;
-
     // Error Check: check if the next character is a non-digit
     if (*string == '\0' || !djc_is_digit(*string)) {
       if (end)
-        *end = string - 1;
+        *end = begin;
       result.success = DJC_ATOI_ERROR_INVALID_CHAR;
       return result;
     }
@@ -289,7 +299,7 @@ merge struct djc_atoi_result djc_atoi(const char* restrict string,
     // Error Check: check if the next character is a non-digit
     if (*string == '\0' || !djc_is_digit(*string)) {
       if (end)
-        *end = string - 1;
+        *end = begin;
       result.success = DJC_ATOI_ERROR_INVALID_CHAR;
       return result;
     }
@@ -297,7 +307,6 @@ merge struct djc_atoi_result djc_atoi(const char* restrict string,
 
   while (djc_is_digit(*string)) {
     digit = *string - '0';
-    // Check for overflow before multiplying and subtracting
     if (minus) {
       if (result.value < (INT_MIN + digit) / 10) {
         result.success = DJC_ATOI_ERROR_RANGE;
