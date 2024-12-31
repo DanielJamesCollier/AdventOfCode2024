@@ -263,7 +263,7 @@ merge struct djc_atoi_result djc_atoi(const char* restrict string,
   assert(string);
   bool minus = false;
   s32 digit = 0;
-  struct djc_atoi_result result = {0, DJC_ATOI_SUCCESS};
+  struct djc_atoi_result result = {.value = 0, .success = DJC_ATOI_SUCCESS};
   const char* begin = string;
 
   if (*string == '\0') {
