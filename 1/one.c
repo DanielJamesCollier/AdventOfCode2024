@@ -53,7 +53,7 @@ int main(void) {
     total_distance += abs(first_col[i] - second_col[i]);
   }
 
-  printf("Answer (d1p1) = %u\n", total_distance);
+  printf("Answer (d1p1) = %i\n", total_distance);
 
   free(file);
   arena_free(mem);
