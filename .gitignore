@@ -4,3 +4,4 @@ out/
 *.obj
 *.idb
 *.pdb
+*.nativecodeanalysis.xml
