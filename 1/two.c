@@ -68,7 +68,7 @@ s32 main(void) {
     total += first_col[i];
   }
 
-  printf("Answer (d1p2) = %u\n", total);
+  printf("Answer (d1p2) = %i\n", total);
 
   free(file);
   arena_free(mem);
