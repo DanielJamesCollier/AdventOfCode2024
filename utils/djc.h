@@ -24,6 +24,12 @@ typedef double f64;
 #define merge inline
 #define fold __forceinline
 
+#define DJC_MALLOC_CHECK(memory)       \
+  if (memory == NULL) {                \
+    fprintf(stderr, "malloc failed."); \
+    exit(EXIT_FAILURE);                \
+  }
+
 merge char* djc_load_entire_file(char* filename, size_t* plen) {
   assert(filename);
 

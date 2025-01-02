@@ -22,6 +22,7 @@ internal void print_grid_types_as_string(s32* grid, s32 width, s32 height) {
 
   if (print_buffer == NULL) {
     print_buffer = (char*)malloc(width * height + height + 1);
+    DJC_MALLOC_CHECK(print_buffer);
   }
 
   s32 buffer_index = 0;
@@ -151,7 +152,7 @@ internal s32 dir_to_trail(s32 direction) {
       trail = HORIZONTAL;
       break;
     default:
-      printf("Failed to convert dir to trail: dir = %u", direction);
+      printf("Failed to convert dir to trail: dir = %i", direction);
       exit(1);
   }
   return trail;
@@ -164,6 +165,8 @@ internal s32 simulate(s32* grid, s32 width, s32 height) {
   s32 num_obstructions = 0;
 
   s32* obs = (s32*)malloc(sizeof(s32) * width * height);
+  DJC_MALLOC_CHECK(obs);
+
   for (int y = 0; y < height; y++) {
     for (int x = 0; x < width; x++) {
       obs[x + y * width] = DOT;
@@ -272,6 +275,7 @@ s32 main(void) {
   djc_strip_crlf(file);
 
   s32* grid = (s32*)malloc(width * height * sizeof(s32));
+  DJC_MALLOC_CHECK(grid);
 
   for (s32 i = 0; i < width * height; i++) {
     switch (file[i]) {

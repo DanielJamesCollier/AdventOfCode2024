@@ -79,17 +79,11 @@ s32 main(void) {
   }
 
   char** array = malloc((size_t)rows * sizeof(char*));
-  if (array == NULL) {
-    fprintf(stderr, "malloc failed.");
-    exit(1);
-  }
+  DJC_MALLOC_CHECK(array);
 
   for (s32 i = 0; i < rows; i++) {
     array[i] = malloc((size_t)cols * sizeof(char));
-    if (array[i] == NULL) {
-      fprintf(stderr, "malloc failed.");
-      exit(1);
-    }
+    DJC_MALLOC_CHECK(array[i]);
   }
 
   for (s32 i = 0; i < rows; i++) {

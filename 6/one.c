@@ -22,6 +22,7 @@ internal void print_grid_types_as_string(s32* grid, s32 width, s32 height) {
 
   if (print_buffer == NULL) {
     print_buffer = (char*)malloc(width * height + height + 1);
+    DJC_MALLOC_CHECK(print_buffer);
   }
 
   s32 buffer_index = 0;
@@ -188,6 +189,7 @@ s32 main(void) {
   djc_strip_crlf(file);
 
   s32* grid = (s32*)malloc(width * height * sizeof(s32));
+  DJC_MALLOC_CHECK(grid);
 
   for (s32 i = 0; i < width * height; i++) {
     switch (file[i]) {

@@ -67,10 +67,7 @@ internal s32* remove_at(int* input_array,
   size_t new_length = input_array_length - 1;
 
   int* new_array = (int*)malloc(new_length * sizeof(int));
-  if (new_array == NULL) {
-    printf("malloc failed");
-    exit(EXIT_FAILURE);
-  }
+  DJC_MALLOC_CHECK(new_array);
 
   if (index_to_remove > input_array_length) {
     printf("index out of bounds in remove_at(). index=%zu", index_to_remove);
