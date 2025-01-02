@@ -103,12 +103,12 @@ internal void get_relative_index(s32 guard_direction,
   };
 
   if (guard_direction < UP || guard_direction > LEFT) {
-    printf("guard_direction is not valid. dir=%u", guard_direction);
+    printf("guard_direction is not valid. dir=%i", guard_direction);
     exit(1);
   }
 
   if (direction < UP || direction > LEFT) {
-    printf("direction is not valid. dir=%u", direction);
+    printf("direction is not valid. dir=%i", direction);
     exit(1);
   }
 
@@ -222,7 +222,6 @@ found_guard:
         if (right_x >= 0 && right_x < width && right_y >= 0 &&
             right_y < height &&
             grid[right_index] == guard_to_adjecent_trail(direction)) {
-          // printf("%d %d\n", right_x, right_y);
           ++num_obstructions;
 
           get_relative_index(direction, UP, x, y, &front_x, &front_y);
@@ -313,7 +312,7 @@ s32 main(void) {
 
   s32 answer = simulate(grid, width, height);
 
-  printf("Answer (d6p2) = %u\n", answer);
+  printf("Answer (d6p2) = %i\n", answer);
 
   free(grid);
   free(file);

@@ -226,7 +226,7 @@ s32 main(void) {
 
   // + 1 as we do not allow the guard to exit the grid.
   // The question expects it too.
-  printf("Answer (d6p1) = %u\n", count_x(grid, width, height) + 1);
+  printf("Answer (d6p1) = %i\n", count_x(grid, width, height) + 1);
 
   free(grid);
   free(file);
