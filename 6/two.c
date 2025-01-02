@@ -10,7 +10,7 @@
 #include "../utils/djc.h"
 
 #define STEP_SPEED 100
-#define DEBUG_DRAW
+//#define DEBUG_DRAW
 
 enum type { UP, RIGHT, DOWN, LEFT, HASH, DOT, HORIZONTAL, VERTICAL, WALL };
 
@@ -212,7 +212,9 @@ found_guard:
       grid[x + y * width] = dir_to_trail(direction);
       x = front_x;
       y = front_y;
+#if defined(DEBUG_DRAW)
       print_grid_types_as_string(grid, width, height);
+#endif
 
       // Part 2: check if we can make it into an infinite loop.
       // ----

@@ -75,7 +75,7 @@ s32 main(void) {
 
   size_t length = 0;
   char* input_file_path =
-      djc_get_input_file("\\resources\\day_five\\input.txt");
+      djc_get_input_file("\\resources\\5\\input.txt");
   char* file = djc_load_entire_file(input_file_path, &length);
   djc_convert_crlf_to_lf(file);
 

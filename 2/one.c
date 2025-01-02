@@ -49,7 +49,7 @@ internal bool is_safe(struct report* report) {
 s32 main(void) {
   struct Arena* mem = arena_create("General", 80);
   size_t file_size = 0;
-  char* input_file_path = djc_get_input_file("\\resources\\day_two\\input.txt");
+  char* input_file_path = djc_get_input_file("\\resources\\2\\input.txt");
   char* file = djc_load_entire_file(input_file_path, &file_size);
   djc_convert_crlf_to_lf(file);
 

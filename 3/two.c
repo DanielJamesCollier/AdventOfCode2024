@@ -11,8 +11,7 @@
 
 s32 main(void) {
   size_t file_size = 0;
-  char* input_file_path =
-      djc_get_input_file("\\resources\\day_three\\input.txt");
+  char* input_file_path = djc_get_input_file("\\resources\\3\\input.txt");
   char* file = djc_load_entire_file(input_file_path, &file_size);
 
   if (file == NULL) {
