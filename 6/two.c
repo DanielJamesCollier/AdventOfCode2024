@@ -10,7 +10,7 @@
 #include "../utils/djc.h"
 
 #define STEP_SPEED 100
-//#define DEBUG_DRAW
+// #define DEBUG_DRAW
 
 enum type { UP, RIGHT, DOWN, LEFT, HASH, DOT, HORIZONTAL, VERTICAL, WALL };
 

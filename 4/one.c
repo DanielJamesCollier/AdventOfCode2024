@@ -56,8 +56,7 @@ internal void find_word(char** grid, s32 rows, s32 cols, const char* word) {
 
 s32 main(void) {
   size_t file_size = 0;
-  char* input_file_path =
-      djc_get_input_file("\\resources\\4\\input.txt");
+  char* input_file_path = djc_get_input_file("\\resources\\4\\input.txt");
   char* file = djc_load_entire_file(input_file_path, &file_size);
   //  djc_convert_ctrl_to_lf(file);
 

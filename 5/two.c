@@ -74,8 +74,7 @@ s32 main(void) {
   struct Arena* mem = arena_create("General", 80);
 
   size_t length = 0;
-  char* input_file_path =
-      djc_get_input_file("\\resources\\5\\input.txt");
+  char* input_file_path = djc_get_input_file("\\resources\\5\\input.txt");
   char* file = djc_load_entire_file(input_file_path, &length);
   djc_convert_crlf_to_lf(file);
 

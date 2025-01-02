@@ -65,8 +65,7 @@ internal size_t line_length(const char* string) {
 
 s32 main(void) {
   size_t file_size = 0;
-  char* input_file_path =
-      djc_get_input_file("\\resources\\4\\input.txt");
+  char* input_file_path = djc_get_input_file("\\resources\\4\\input.txt");
   char* file = djc_load_entire_file(input_file_path, &file_size);
 
   if (file == NULL) {
