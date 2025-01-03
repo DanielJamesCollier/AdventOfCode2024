@@ -78,7 +78,7 @@ internal void parse_file(char* file) {
 }
 
 s32 main(void) {
-  size_t length = 0;
+  u6 length = 0;
   char* input_file_path = djc_get_input_file("\\resources\\7\\input.txt");
   char* file = djc_load_entire_file(input_file_path, &length);
 

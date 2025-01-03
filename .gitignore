@@ -5,3 +5,4 @@ out/
 *.idb
 *.pdb
 *.nativecodeanalysis.xml
+*.tmp

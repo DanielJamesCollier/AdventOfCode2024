@@ -39,6 +39,7 @@ _Static_assert(sizeof(b8) == 1);
 _Static_assert(sizeof(b16) == 2);
 _Static_assert(sizeof(b32) == 4);
 _Static_assert(sizeof(b64) == 8);
+_Static_assert(sizeof(size_t) == 8);  // Use s64 in for loops.
 
 #define internal static
 #define persist static
@@ -51,18 +52,18 @@ _Static_assert(sizeof(b64) == 8);
     exit(EXIT_FAILURE);                \
   }
 
-merge char* djc_load_entire_file(char* filename, size_t* plen) {
+merge char* djc_load_entire_file(char* filename, u64* plen) {
   assert(filename);
 
   char* text = NULL;
-  size_t len = 0;
+  u64 len = 0;
   FILE* f = fopen(filename, "rb");
 
   if (f == 0)
     return NULL;
 
   fseek(f, 0, SEEK_END);
-  len = (size_t)ftell(f);
+  len = (u64)ftell(f);
 
   if (plen)
     *plen = len;
@@ -80,10 +81,10 @@ merge char* djc_load_entire_file(char* filename, size_t* plen) {
   return text;
 }
 
-merge size_t djc_count_lines_in_file(const char* lines) {
+merge u64 djc_count_lines_in_file(const char* lines) {
   assert(lines);
 
-  size_t num_lines = 0;
+  u64 num_lines = 0;
   while (*lines) {
     if (*lines == '\n' && *(lines + 1) != '\0') {
       num_lines++;
@@ -94,8 +95,8 @@ merge size_t djc_count_lines_in_file(const char* lines) {
   return num_lines;
 }
 
-merge size_t djc_strlen_until_newline(const char* string) {
-  size_t count = 0;
+merge u64 djc_strlen_until_newline(const char* string) {
+  u64 count = 0;
   while (string[count] != '\0' && string[count] != '\n') {
     count++;
   }
@@ -135,12 +136,12 @@ merge char* get_next_line(char* string) {
   return *string ? string : NULL;
 }
 
-merge size_t djc_line_length(char* string) {
+merge u64 djc_line_length(char* string) {
   if (string == NULL) {
     return 0;
   }
 
-  size_t length = 0;
+  u64 length = 0;
 
   while (*string && *string != '\n') {
     ++length;
@@ -166,11 +167,11 @@ merge char* djc_get_input_file(const char* exe_relative_path) {
   // Find the last occurrence of the backslash ('\') in the path
   char* lastBackslash = strrchr(filePath, '\\');
   if (lastBackslash != NULL) {
-    size_t inputFileLength =
+    u64 inputFileLength =
         strlen(exe_relative_path) + 1;  // +1 for null-terminator
 
     // Ensure that we have enough space to copy the new path
-    size_t offset = (size_t)(lastBackslash - filePath);
+    u64 offset = (u64)(lastBackslash - filePath);
     if (lastBackslash + 1 + inputFileLength <= filePath + sizeof(filePath)) {
       snprintf(lastBackslash + 1, sizeof(filePath) - offset - 1, "%s",
                exe_relative_path);
@@ -363,6 +364,25 @@ merge struct djc_atoi_result djc_atoi(const char* restrict string,
   }
 
   return result;
+}
+
+merge s32 djc_strncmp(const char* restrict s1, const char* restrict s2, s64 n) {
+  while (n && *s1 && (*s1 == *s2)) {
+    ++s1;
+    ++s2;
+    --n;
+  }
+
+  if (n == 0) {
+    return 0;
+  } else {
+    // 7.21.4/1 (C99)
+    // The sign of a nonzero value returned by the comparison functions memcmp,
+    // strcmp, and strncmp is determined by the sign of the difference between
+    // the values of the first pair of characters (both interpreted as unsigned
+    // char) that differ in the objects being compared.
+    return (*(unsigned char*)s1 - *(unsigned char*)s2);
+  }
 }
 
 #endif  // DJC_H_

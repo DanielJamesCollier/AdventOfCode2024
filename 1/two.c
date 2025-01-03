@@ -13,7 +13,7 @@ internal int compare(const void* a, const void* b) {
 
 s32 main(void) {
   struct Arena* mem = arena_create("General", 80);
-  size_t file_size = 0;
+  u64 file_size = 0;
   char* input_file_path = djc_get_input_file("resources\\1\\input.txt");
   char* file = djc_load_entire_file(input_file_path, &file_size);
   djc_convert_crlf_to_lf(file);
@@ -23,12 +23,12 @@ s32 main(void) {
     return 0;
   }
 
-  size_t num_lines = djc_count_lines_in_file(file);
+  u64 num_lines = djc_count_lines_in_file(file);
   s32* first_col = arena_alloc(mem, sizeof(s32), num_lines);
   s32* second_col = arena_alloc(mem, sizeof(s32), num_lines);
 
   char* current = file;
-  size_t i = 0;
+  u64 i = 0;
   while (i < num_lines) {
     first_col[i] = atoi(current);
 
@@ -49,7 +49,7 @@ s32 main(void) {
   for (i = 0; i < num_lines; i++) {
     s32 left_current = first_col[i];
     s32 count = 0;
-    for (size_t j = 0; j < num_lines; j++) {
+    for (u64 j = 0; j < num_lines; j++) {
       s32 right_current = second_col[j];
 
       if (right_current > left_current) {

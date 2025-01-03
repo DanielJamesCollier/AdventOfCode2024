@@ -49,10 +49,10 @@ internal void test_djc_count_lines_in_file() {
   }
 }
 
-size_t index_after_char(const char* str, s32 c) {
+u64 index_after_char(const char* str, s32 c) {
   assert(str);
-  size_t i = 0;
-  size_t len = strlen(str);
+  u64 i = 0;
+  u64 len = strlen(str);
 
   for (i = 0; i < len; i++) {
     if (str[i] == c) {

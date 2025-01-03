@@ -16,7 +16,7 @@ call "C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Auxiliary\Build
 :: /Zc:forScope          - Enforces standard scoping rules for `for` loop variables.
 :: /RTC1                 - Enables runtime checks for uninitialized variables and other errors.
 :: /Gd                   - Sets __cdecl as the default calling convention for functions.
-:: /MDd                  - Links the debug version of the multithreaded dynamic C runtime library.
+:: /MTd                  - Links the debug version of the multithreaded static C runtime library.
 :: /FC                   - Displays full paths in diagnostic output.
 :: /EHsc                 - Enables standard exception handling model (catch and throw).
 :: /nologo               - Suppresses the display of the startup banner and copyright message.
@@ -26,6 +26,6 @@ call "C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Auxiliary\Build
 :: /guard:cf             - Enables control flow guard to mitigate certain types of attacks.
 :: /analyze              - Runs code analysis to detect potential issues during compilation.
 :: /Qspectre             - Mitigates certain Spectre variant 1 security vulnerabilities.
-set DEBUG_FLAGS=/permissive- /GS /W3 /Zc:wchar_t /Zi /Gm- /Od /sdl /Zc:inline /fp:precise /errorReport:prompt /WX- /Zc:forScope /RTC1 /Gd /MDd /FC /EHsc /nologo /diagnostics:column /std:c17 /fsanitize=address /guard:cf /analyze /Qspectre
+set DEBUG_FLAGS=/permissive- /GS /W3 /Zc:wchar_t /Zi /Gm- /Od /sdl /Zc:inline /fp:precise /errorReport:prompt /WX- /Zc:forScope /RTC1 /Gd /MTd /FC /EHsc /nologo /diagnostics:column /std:c17 /fsanitize=address /guard:cf /analyze /Qspectre
 
 set LINKER_FLAGS= /DEBUG:FULL /INCREMENTAL:NO

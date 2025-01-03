@@ -173,7 +173,7 @@ s32 main(void) {
   system("cls");
   Sleep(1000);
 #endif
-  size_t length = 0;
+  u64 length = 0;
   char* input_file_path = djc_get_input_file("\\resources\\6\\input.txt");
   char* file = djc_load_entire_file(input_file_path, &length);
 

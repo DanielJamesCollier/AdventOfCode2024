@@ -13,22 +13,22 @@ internal int compare(const void* a, const void* b) {
 
 int main(void) {
   struct Arena* mem = arena_create("General", 80);
-  size_t file_size = 0;
+  u64 file_size = 0;
   char* input_file_path = djc_get_input_file("\\resources\\1\\input.txt");
   char* file = djc_load_entire_file(input_file_path, &file_size);
-  djc_convert_crlf_to_lf(file);
 
+  djc_convert_crlf_to_lf(file);
   if (file == NULL) {
     printf("Failed to load the file input.txt: %s", input_file_path);
     return 0;
   }
 
-  size_t num_lines = djc_count_lines_in_file(file);
+  u64 num_lines = djc_count_lines_in_file(file);
   s32* first_col = arena_alloc(mem, sizeof(s32), num_lines);
   s32* second_col = arena_alloc(mem, sizeof(s32), num_lines);
 
   char* current = file;
-  size_t i = 0;
+  u64 i = 0;
   while (i < num_lines) {
     first_col[i] = atoi(current);
 

@@ -9,7 +9,7 @@
 internal s32 num_movements = 4;
 internal s32 dx[] = {0, 1, 0, -1};
 internal s32 dy[] = {1, 0, -1, 0};
-internal size_t found = 0;
+internal u64 found = 0;
 
 // Function to check if a word exists starting from (x, y) in a given direction
 internal s32 search_direction(char** grid,
@@ -21,7 +21,7 @@ internal s32 search_direction(char** grid,
                               s32 dir) {
   assert(grid);
 
-  size_t len = strlen(word);
+  u64 len = strlen(word);
 
   for (s32 i = 0; i < (int)len; i++) {
     s32 nx = x + i * dx[dir];
@@ -55,7 +55,7 @@ internal void find_word(char** grid, s32 rows, s32 cols, const char* word) {
 }
 
 s32 main(void) {
-  size_t file_size = 0;
+  u64 file_size = 0;
   char* input_file_path = djc_get_input_file("\\resources\\4\\input.txt");
   char* file = djc_load_entire_file(input_file_path, &file_size);
   //  djc_convert_ctrl_to_lf(file);
@@ -77,11 +77,11 @@ s32 main(void) {
     }
   }
 
-  char** array = malloc((size_t)rows * sizeof(char*));
+  char** array = malloc((u64)rows * sizeof(char*));
   DJC_MALLOC_CHECK(array);
 
   for (s32 i = 0; i < rows; i++) {
-    array[i] = malloc((size_t)cols * sizeof(char));
+    array[i] = malloc((u64)cols * sizeof(char));
     DJC_MALLOC_CHECK(array[i]);
   }
 

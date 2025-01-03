@@ -6,9 +6,9 @@
 
 #include "../utils/djc.h"
 
-internal size_t count_x_mas(char** grid, s32 rows, s32 cols) {
+internal u64 count_x_mas(char** grid, s32 rows, s32 cols) {
   assert(grid);
-  size_t found = 0;
+  u64 found = 0;
 
   for (s32 x = 0; x < rows; x++) {
     for (s32 y = 0; y < cols; y++) {
@@ -52,10 +52,10 @@ internal size_t count_x_mas(char** grid, s32 rows, s32 cols) {
   return found;
 }
 
-internal size_t line_length(const char* string) {
+internal u64 line_length(const char* string) {
   assert(string);
 
-  size_t num = 0;
+  u64 num = 0;
   while (*string && *string != '\n') {
     ++string;
     ++num;
@@ -64,7 +64,7 @@ internal size_t line_length(const char* string) {
 }
 
 s32 main(void) {
-  size_t file_size = 0;
+  u64 file_size = 0;
   char* input_file_path = djc_get_input_file("\\resources\\4\\input.txt");
   char* file = djc_load_entire_file(input_file_path, &file_size);
 
@@ -85,11 +85,11 @@ s32 main(void) {
     }
   }
 
-  char** array = malloc((size_t)rows * sizeof(char*));
+  char** array = malloc((u64)rows * sizeof(char*));
   DJC_MALLOC_CHECK(array);
 
   for (s32 i = 0; i < rows; i++) {
-    array[i] = malloc((size_t)cols * sizeof(char));
+    array[i] = malloc((u64)cols * sizeof(char));
     DJC_MALLOC_CHECK(array[i]);
   }
 

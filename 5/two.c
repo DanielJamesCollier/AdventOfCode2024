@@ -22,7 +22,7 @@ typedef enum {
 } Section;
 
 internal void push_rule(s32 rules[RULES_SIZE][RULES_SIZE], s32 from, s32 to) {
-  for (size_t i = 0; i < RULES_SIZE; i++) {
+  for (u64 i = 0; i < RULES_SIZE; i++) {
     if (rules[from][i] == -1) {
       rules[from][i] = to;
       break;
@@ -72,7 +72,7 @@ internal s32 compare_with_context(void* context, const void* a, const void* b) {
 s32 main(void) {
   struct Arena* mem = arena_create("General", 80);
 
-  size_t length = 0;
+  u64 length = 0;
   char* input_file_path = djc_get_input_file("\\resources\\5\\input.txt");
   char* file = djc_load_entire_file(input_file_path, &length);
   djc_convert_crlf_to_lf(file);
@@ -86,10 +86,10 @@ s32 main(void) {
   memset(rules, -1, sizeof(rules));
 
   s32 section = SECTION_RULES;
-  size_t accum = 0;
+  u64 accum = 0;
 
   for (char* line = file; line; line = get_next_line(line)) {
-    size_t line_length = djc_line_length(line);
+    u64 line_length = djc_line_length(line);
 
     if (line_length == 1) {
       section = SECTION_SEQUENCES;
@@ -120,7 +120,7 @@ s32 main(void) {
       if (!sequence_valid(seq, rules)) {
         qsort_s(seq.values, seq.count, sizeof(int), compare_with_context,
                 rules);
-        accum += (size_t)seq.values[seq.count / 2];
+        accum += (u64)seq.values[seq.count / 2];
       }
     }
   }

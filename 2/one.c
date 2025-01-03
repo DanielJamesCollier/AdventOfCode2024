@@ -9,12 +9,12 @@
 
 struct report {
   s32* level;
-  size_t num_levels;
+  u64 num_levels;
 };
 
 struct reports {
   struct report* rep;
-  size_t num_reports;
+  u64 num_reports;
 };
 
 internal b8 is_safe(struct report* report) {
@@ -23,7 +23,7 @@ internal b8 is_safe(struct report* report) {
 
   b8 increasing = TRUE;
   b8 decreasing = TRUE;
-  for (size_t i = 0; i < report->num_levels - 1; i++) {
+  for (u64 i = 0; i < report->num_levels - 1; i++) {
     s32 diff = abs(report->level[i] - report->level[i + 1]);
     if (diff < 1 || diff > 3) {
       return TRUE;
@@ -47,7 +47,7 @@ internal b8 is_safe(struct report* report) {
 
 s32 main(void) {
   struct Arena* mem = arena_create("General", 80);
-  size_t file_size = 0;
+  u64 file_size = 0;
   char* input_file_path = djc_get_input_file("\\resources\\2\\input.txt");
   char* file = djc_load_entire_file(input_file_path, &file_size);
   djc_convert_crlf_to_lf(file);
@@ -62,7 +62,7 @@ s32 main(void) {
     return 0;
   }
 
-  size_t i = 0;
+  u64 i = 0;
   for (char* line = file; line; line = get_next_line(line)) {
     struct report* report = &reports_list.rep[i];
     report->level = mem->current;
@@ -81,7 +81,7 @@ s32 main(void) {
     i++;
   }
 
-  size_t num_safe_reports = 0;
+  u64 num_safe_reports = 0;
 
   for (i = 0; i < reports_list.num_reports; i++) {
     struct report* report = &reports_list.rep[i];
