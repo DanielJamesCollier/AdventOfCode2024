@@ -2,7 +2,6 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
 
 #include "../utils/djc.h"
 
@@ -31,8 +30,7 @@ internal s64 solve(char* current) {
       if (*end != ',') {
         continue;
       }
-      ++end;
-      current = end;
+      current = ++end;
       num_two = strtol(current, &end, 10);
       if (*end == ')') {
         accumulator += num_one * num_two;
