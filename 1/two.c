@@ -44,7 +44,6 @@ s32 main(void) {
     i++;
   }
 
-  // sort the aray so we can early out. See "Fast early out"
   qsort(second_col, num_lines, sizeof(s32), compare);
 
   for (i = 0; i < num_lines; i++) {
@@ -53,7 +52,6 @@ s32 main(void) {
     for (size_t j = 0; j < num_lines; j++) {
       s32 right_current = second_col[j];
 
-      // Fast early out
       if (right_current > left_current) {
         break;
       } else if (second_col[j] == left_current) {

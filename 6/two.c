@@ -14,7 +14,7 @@
 enum type { UP, RIGHT, DOWN, LEFT, HASH, DOT, HORIZONTAL, VERTICAL, WALL };
 
 #if defined(DEBUG_DRAW)
-static char* print_buffer = NULL;
+internal char* print_buffer = NULL;
 
 internal void print_grid_types_as_string(s32* grid, s32 width, s32 height) {
   assert(grid);
