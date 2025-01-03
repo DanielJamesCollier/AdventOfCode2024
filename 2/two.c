@@ -2,7 +2,6 @@
 
 #include <Windows.h>
 #include <assert.h>
-#include <stdbool.h>
 #include <stdint.h>
 #include <string.h>
 
@@ -35,26 +34,26 @@ internal void push_level(struct report* report, s32 level) {
   report->num_levels = new_num_levels;
 }
 
-internal bool is_safe(s32* levels, size_t num_levels) {
-  bool increasing = true;
-  bool decreasing = true;
+internal b8 is_safe(s32* levels, size_t num_levels) {
+  b8 increasing = TRUE;
+  b8 decreasing = TRUE;
   for (size_t i = 0; i < num_levels - 1; i++) {
     s32 diff = abs(levels[i] - levels[i + 1]);
     if (diff < 1 || diff > 3) {
-      return false;
+      return FALSE;
     }
 
     if (levels[i] >= levels[i + 1]) {
-      increasing = false;
+      increasing = FALSE;
     }
 
     if (levels[i] <= levels[i + 1]) {
-      decreasing = false;
+      decreasing = FALSE;
     }
 
     // small optimisation to skip some unneeded loops.
     if (!increasing && !decreasing) {
-      return false;
+      return FALSE;
     }
   }
   return increasing || decreasing;
@@ -84,25 +83,25 @@ internal s32* remove_at(int* input_array,
   return new_array;
 }
 
-internal bool check(struct report* report) {
+internal b8 check(struct report* report) {
   assert(report);
   assert(report->level);
 
   if (is_safe(report->level, report->num_levels)) {
-    return true;
+    return TRUE;
   }
 
   for (size_t i = 0; i < report->num_levels; i++) {
     size_t new_array_length = 0;
     int* new_array =
         remove_at(report->level, report->num_levels, i, &new_array_length);
-    bool now_safe = is_safe(new_array, new_array_length);
+    b8 now_safe = is_safe(new_array, new_array_length);
     free(new_array);
     if (now_safe) {
-      return true;
+      return TRUE;
     }
   }
-  return false;
+  return FALSE;
 }
 
 s32 main(void) {
@@ -145,7 +144,7 @@ s32 main(void) {
 
   for (i = 0; i < reports_list.num_reports; i++) {
     struct report* report = &reports_list.rep[i];
-    bool safe = check(report);
+    b8 safe = check(report);
 
     if (safe) {
       num_safe_reports++;

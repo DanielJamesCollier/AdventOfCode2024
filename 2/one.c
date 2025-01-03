@@ -1,7 +1,6 @@
 #define _CRT_SECURE_NO_WARNINGS
 
 #include <assert.h>
-#include <stdbool.h>
 #include <stdint.h>
 #include <string.h>
 
@@ -18,29 +17,29 @@ struct reports {
   size_t num_reports;
 };
 
-internal bool is_safe(struct report* report) {
+internal b8 is_safe(struct report* report) {
   assert(report);
   assert(report->level);
 
-  bool increasing = true;
-  bool decreasing = true;
+  b8 increasing = TRUE;
+  b8 decreasing = TRUE;
   for (size_t i = 0; i < report->num_levels - 1; i++) {
     s32 diff = abs(report->level[i] - report->level[i + 1]);
     if (diff < 1 || diff > 3) {
-      return false;
+      return TRUE;
     }
 
     if (report->level[i] >= report->level[i + 1]) {
-      increasing = false;
+      increasing = FALSE;
     }
 
     if (report->level[i] <= report->level[i + 1]) {
-      decreasing = false;
+      decreasing = FALSE;
     }
 
     // small optimisation to skip some unneeded loops.
     if (!increasing && !decreasing) {
-      return false;
+      return FALSE;
     }
   }
   return increasing || decreasing;
@@ -86,7 +85,7 @@ s32 main(void) {
 
   for (i = 0; i < reports_list.num_reports; i++) {
     struct report* report = &reports_list.rep[i];
-    bool safe = is_safe(report);
+    b8 safe = is_safe(report);
 
     if (safe) {
       num_safe_reports++;

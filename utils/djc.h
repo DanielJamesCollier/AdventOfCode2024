@@ -4,7 +4,6 @@
 #include <Windows.h>
 
 #include <assert.h>
-#include <stdbool.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -19,6 +18,13 @@ typedef int32_t s32;
 typedef int64_t s64;
 typedef float f32;
 typedef double f64;
+typedef int8_t b8;
+typedef int16_t b16;
+typedef int32_t b32;
+typedef int64_t b64;
+#define TRUE 1
+#define FALSE 0
+
 #define internal static
 #define persist static
 #define merge inline
@@ -239,16 +245,16 @@ merge void djc_strip_crlf(char* string) {
   *write = '\0';
 }
 
-merge bool djc_is_whitespace(char c) {
+merge b8 djc_is_whitespace(char c) {
   return c == ' ' || c == '\f' || c == '\n' || c == '\r' || c == '\t' ||
          c == '\v';
 }
 
-merge bool djc_is_horizontal_space(char c) {
+merge b8 djc_is_horizontal_space(char c) {
   return c == ' ' || c == '\t';
 }
 
-merge bool djc_is_digit(char c) {
+merge b8 djc_is_digit(char c) {
   return c >= '0' && c <= '9';
 }
 
@@ -267,7 +273,7 @@ struct djc_atoi_result {
 merge struct djc_atoi_result djc_atoi(const char* restrict string,
                                       const char** restrict end) {
   assert(string);
-  bool minus = false;
+  b8 minus = FALSE;
   s32 digit = 0;
   struct djc_atoi_result result = {.value = 0, .success = DJC_ATOI_SUCCESS};
   const char* begin = string;
@@ -300,7 +306,7 @@ merge struct djc_atoi_result djc_atoi(const char* restrict string,
     }
   } else if (*string == '-') {
     ++string;
-    minus = true;
+    minus = TRUE;
 
     // Error Check: check if the next character is a non-digit
     if (*string == '\0' || !djc_is_digit(*string)) {

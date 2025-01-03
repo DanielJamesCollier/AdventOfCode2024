@@ -1,7 +1,6 @@
-#define _CRT_SECURE_NO_WARNINGS
+#define _CRT_SECURE_NO_WARNING
 
 #include <assert.h>
-#include <stdbool.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -31,7 +30,7 @@ internal void push_rule(s32 rules[RULES_SIZE][RULES_SIZE], s32 from, s32 to) {
   }
 }
 
-internal bool sequence_valid(Sequence seq, s32 rules[RULES_SIZE][RULES_SIZE]) {
+internal b8 sequence_valid(Sequence seq, s32 rules[RULES_SIZE][RULES_SIZE]) {
   assert(seq.values);
 
   for (s32 i = 0; i < seq.count; i++) {
@@ -39,7 +38,7 @@ internal bool sequence_valid(Sequence seq, s32 rules[RULES_SIZE][RULES_SIZE]) {
       for (s32 k = 0; k < RULES_SIZE; k++) {
         s32 rule = rules[seq.values[i]][k];
         if (rule == -1) {
-          return false;
+          return FALSE;
         }
         if (seq.values[j] == rule) {
           break;
@@ -47,7 +46,7 @@ internal bool sequence_valid(Sequence seq, s32 rules[RULES_SIZE][RULES_SIZE]) {
       }
     }
   }
-  return true;
+  return TRUE;
 }
 
 // return -1 if the first argument is less than the second,

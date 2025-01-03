@@ -2,7 +2,6 @@
 #define _CRT_SECURE_NO_WARNINGS
 
 #include <Windows.h>  // For GetModuleFileName.
-#include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -22,7 +21,7 @@ s32 main(void) {
   char* current = file;
   s64 accumulator = 0;
 
-  bool enable_muls = true;
+  b8 enable_muls = TRUE;
 
   while (*current) {
     switch (*current) {
@@ -33,7 +32,7 @@ s32 main(void) {
           if (*current && *current == '(') {
             ++current;
             if (*current && *current == ')') {
-              enable_muls = true;
+              enable_muls = TRUE;
             }
           } else if (*current && *current == 'n') {
             ++current;
@@ -44,7 +43,7 @@ s32 main(void) {
                 if (*current && *current == '(') {
                   ++current;
                   if (*current && *current == ')') {
-                    enable_muls = false;
+                    enable_muls = FALSE;
                   }
                 }
               }

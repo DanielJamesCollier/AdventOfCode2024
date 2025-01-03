@@ -1,7 +1,6 @@
 #define _CRT_SECURE_NO_WARNINGS
 
 #include <assert.h>
-#include <stdbool.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -195,7 +194,7 @@ found_guard:
   }
   // ----
 
-  while (true) {
+  while (1) {
     s32 front_x;
     s32 front_y;
     get_relative_index(direction, UP, x, y, &front_x, &front_y);
