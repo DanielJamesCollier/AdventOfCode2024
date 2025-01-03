@@ -1,26 +1,13 @@
-
 #define _CRT_SECURE_NO_WARNINGS
 
-#include <Windows.h>  // For GetModuleFileName.
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
 #include "../utils/djc.h"
 
-s32 main(void) {
-  size_t file_size = 0;
-  char* input_file_path = djc_get_input_file("\\resources\\3\\input.txt");
-  char* file = djc_load_entire_file(input_file_path, &file_size);
-
-  if (file == NULL) {
-    printf("Failed to load the file input.txt: %s", input_file_path);
-    return 0;
-  }
-
-  char* current = file;
+internal s64 solve(char* current) {
   s64 accumulator = 0;
-
   b8 enable_muls = TRUE;
 
   while (*current) {
@@ -89,8 +76,19 @@ s32 main(void) {
       current++;
     }
   }
+  return accumulator;
+}
 
-  printf("Answer (d3p2) = %lld\n", accumulator);
+s32 main(void) {
+  size_t file_size = 0;
+  char* input_file_path = djc_get_input_file("\\resources\\3\\input.txt");
+  char* file = djc_load_entire_file(input_file_path, &file_size);
 
+  if (file == NULL) {
+    printf("Failed to load the file input.txt: %s", input_file_path);
+    return 0;
+  }
+
+  printf("Answer (d3p2) = %lld\n", solve(file));
   return 0;
 }

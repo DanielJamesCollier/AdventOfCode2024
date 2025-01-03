@@ -25,6 +25,21 @@ typedef int64_t b64;
 #define TRUE 1
 #define FALSE 0
 
+_Static_assert(sizeof(u8) == 1);
+_Static_assert(sizeof(u16) == 2);
+_Static_assert(sizeof(u32) == 4);
+_Static_assert(sizeof(u64) == 8);
+_Static_assert(sizeof(s8) == 1);
+_Static_assert(sizeof(s16) == 2);
+_Static_assert(sizeof(s32) == 4);
+_Static_assert(sizeof(s64) == 8);
+_Static_assert(sizeof(f32) == 4);
+_Static_assert(sizeof(f64) == 8);
+_Static_assert(sizeof(b8) == 1);
+_Static_assert(sizeof(b16) == 2);
+_Static_assert(sizeof(b32) == 4);
+_Static_assert(sizeof(b64) == 8);
+
 #define internal static
 #define persist static
 #define merge inline
