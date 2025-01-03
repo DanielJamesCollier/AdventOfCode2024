@@ -30,10 +30,6 @@ s32 main(void) {
 
     current++;
 
-    if (*current == '\0') {
-      break;
-    }
-
     if (*current == 'u') {
       current++;
       if (*current == 'l') {
@@ -59,6 +55,8 @@ s32 main(void) {
           current = end++;
         }
       }
+    } else if (*current == '\0') {
+      break;
     }
     ++current;
   }
