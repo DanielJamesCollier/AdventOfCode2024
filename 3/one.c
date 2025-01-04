@@ -48,11 +48,11 @@ s32 main(void) {
   char* input_file_path = djc_get_input_file("\\resources\\3\\input.txt");
   char* file = djc_load_entire_file(input_file_path, &file_size);
 
-  djc_convert_crlf_to_lf(file);
   if (file == NULL) {
     printf("Failed to load the file input.txt: %s", input_file_path);
     return (0);
   }
+  djc_convert_crlf_to_lf(file);
   printf("Answer (d3p1) = %I64d\n", solve(file));
   return (0);
 }
