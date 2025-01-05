@@ -1,7 +1,6 @@
 #define _CRT_SECURE_NO_WARNINGS
 
 #include <stdio.h>
-#include <stdlib.h>
 
 #include "../utils/djc.h"
 
@@ -12,8 +11,8 @@ internal const char mul[] = "mul(";
 internal s64 solve(char* current) {
   char* end = NULL;
   s64 accumulator = 0;
-  s64 num_one = 0;
-  s64 num_two = 0;
+  struct djc_atoi_result num_one;
+  struct djc_atoi_result num_two;
   b8 enable_muls = TRUE;
 
   while (*current) {
@@ -26,14 +25,20 @@ internal s64 solve(char* current) {
     } else if (djc_strncmp(current, mul, sizeof(mul) - 1) == 0) {
       current += sizeof(mul);
       end = NULL;
-      num_one = strtol(current, &end, 10);
+      num_one = djc_atoi(current, &end);
+      if (num_one.success != DJC_ATOI_SUCCESS) {
+        exit(EXIT_FAILURE);
+      }
       if (*end != ',') {
         continue;
       }
       current = ++end;
-      num_two = strtol(current, &end, 10);
+      num_two = djc_atoi(current, &end);
+      if (num_two.success != DJC_ATOI_SUCCESS) {
+        exit(EXIT_FAILURE);
+      }
       if (*end == ')') {
-        accumulator += num_one * num_two;
+        accumulator += num_one.value * num_two.value;
       }
       current = end;
     }
